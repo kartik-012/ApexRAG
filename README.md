@@ -1,4 +1,4 @@
-<![CDATA[<div align="center">
+<div align="center">
 
 # ⚡ ApexRAG
 
@@ -935,7 +935,7 @@ apexrag/
 ### 1. Clone and Install
 
 ```bash
-git clone https://github.com/yourusername/apexrag.git
+git clone https://github.com/kartik-012/ApexRAG.git
 cd apexrag
 python -m venv venv
 venv\Scripts\activate          # Windows
@@ -1022,9 +1022,8 @@ make drift    # Check corpus drift
 
 <div align="center">
 
-**Built by [Your Name] · 2026 · All evaluation runs: $0.00**
+**Built by [kartik-012](https://github.com/kartik-012) · 2026 · All evaluation runs: $0.00**
 
 *"The bottleneck in RAG systems is almost never the LLM. It's the retriever."*
 
 </div>
-]]>
