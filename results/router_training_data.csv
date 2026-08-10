@@ -1,0 +1,5 @@
+question,query_length,has_named_entity,has_number,best_strategy
+What is componentDidMount lifecycle?,4,1,0,hybrid
+How to manage state in React function component using hooks?,10,1,0,semantic
+Detailed explanation of passing data deeply across multiple component trees using Context API provider,15,1,0,rerank
+useRef vs useState,3,1,0,simple

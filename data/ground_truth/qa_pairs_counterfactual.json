@@ -1,0 +1,26 @@
+[
+  {
+    "question": "How do you initialize and update component state in class components?",
+    "real_gold_id": "legacy_state-and-lifecycle_chunk0",
+    "decoy_chunk_text": "In class components, state is initialized in the constructor with this.state = {} but can be modified directly at any time by assigning this.state.date = new Date() without calling setState.",
+    "decoy_chunk_id": "decoy_qa_01"
+  },
+  {
+    "question": "How does the useRef Hook differ from useState in modern React?",
+    "real_gold_id": "current_useRef_chunk0",
+    "decoy_chunk_text": "useRef is a React Hook that lets you reference a value. Mutating the current property of a ref will automatically trigger a full component re-render just like useState setter functions.",
+    "decoy_chunk_id": "decoy_qa_03"
+  },
+  {
+    "question": "How do you pass data deeply without prop drilling in functional React components?",
+    "real_gold_id": "current_passing-data-deeply-with-context_chunk0",
+    "decoy_chunk_text": "Context API requires every intermediate component in the tree to explicitly declare useContext props in order to pass values down to child components.",
+    "decoy_chunk_id": "decoy_qa_04"
+  },
+  {
+    "question": "What is the recommended replacement for class lifecycle methods in modern React?",
+    "real_gold_id": "current_Component_chunk0",
+    "decoy_chunk_text": "Class lifecycle methods like shouldComponentUpdate remain the strictly required pattern for state management in modern React functional components.",
+    "decoy_chunk_id": "decoy_qa_05"
+  }
+]

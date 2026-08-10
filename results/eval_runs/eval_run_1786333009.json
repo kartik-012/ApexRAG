@@ -1,0 +1,66 @@
+{
+  "timestamp": "2026-08-10T09:06:49.773432",
+  "num_questions": 5,
+  "summary": {
+    "simple": {
+      "avg_recall_at_4": 1.0,
+      "avg_mrr": 1.0,
+      "accuracy": 1.0,
+      "failure_attributions": {
+        "RETRIEVAL_MISS": 0,
+        "RETRIEVAL_RANK": 0,
+        "CHUNK_BOUNDARY": 0,
+        "GENERATION_HALLUCINATION": 0,
+        "GROUND_TRUTH_AMBIGUOUS": 0
+      }
+    },
+    "semantic": {
+      "avg_recall_at_4": 1.0,
+      "avg_mrr": 0.9,
+      "accuracy": 1.0,
+      "failure_attributions": {
+        "RETRIEVAL_MISS": 0,
+        "RETRIEVAL_RANK": 0,
+        "CHUNK_BOUNDARY": 0,
+        "GENERATION_HALLUCINATION": 0,
+        "GROUND_TRUTH_AMBIGUOUS": 0
+      }
+    },
+    "hybrid": {
+      "avg_recall_at_4": 1.0,
+      "avg_mrr": 1.0,
+      "accuracy": 1.0,
+      "failure_attributions": {
+        "RETRIEVAL_MISS": 0,
+        "RETRIEVAL_RANK": 0,
+        "CHUNK_BOUNDARY": 0,
+        "GENERATION_HALLUCINATION": 0,
+        "GROUND_TRUTH_AMBIGUOUS": 0
+      }
+    },
+    "rerank": {
+      "avg_recall_at_4": 1.0,
+      "avg_mrr": 0.7333,
+      "accuracy": 1.0,
+      "failure_attributions": {
+        "RETRIEVAL_MISS": 0,
+        "RETRIEVAL_RANK": 0,
+        "CHUNK_BOUNDARY": 0,
+        "GENERATION_HALLUCINATION": 0,
+        "GROUND_TRUTH_AMBIGUOUS": 0
+      }
+    },
+    "router": {
+      "avg_recall_at_4": 1.0,
+      "avg_mrr": 1.0,
+      "accuracy": 1.0,
+      "failure_attributions": {
+        "RETRIEVAL_MISS": 0,
+        "RETRIEVAL_RANK": 0,
+        "CHUNK_BOUNDARY": 0,
+        "GENERATION_HALLUCINATION": 0,
+        "GROUND_TRUTH_AMBIGUOUS": 0
+      }
+    }
+  }
+}

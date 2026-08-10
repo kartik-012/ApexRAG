@@ -1,0 +1,137 @@
+[
+  {
+    "id": "qa_01_paraphrase",
+    "question": "In what way can you set up and modify state inside class-based React components?",
+    "answer": "In class components, state is initialized in the constructor with this.state = {} and updated by calling this.setState().",
+    "gold_chunk_ids": ["legacy_state-and-lifecycle_chunk0"],
+    "gold_doc_id": "legacy_state-and-lifecycle",
+    "variant_type": "paraphrase",
+    "source_id": "qa_01"
+  },
+  {
+    "id": "qa_01_negated",
+    "question": "Why should you avoid using setState and mutate this.state directly instead?",
+    "answer": "",
+    "gold_chunk_ids": [],
+    "gold_doc_id": "",
+    "variant_type": "negated",
+    "source_id": "qa_01"
+  },
+  {
+    "id": "qa_01_multi_hop",
+    "question": "How do lifecycle methods and state initialization work together during the mounting phase of a class component?",
+    "answer": "State is initialized in the constructor, then componentDidMount fires after the first render, where you can fetch data and call setState to update.",
+    "gold_chunk_ids": ["legacy_state-and-lifecycle_chunk0"],
+    "gold_doc_id": "legacy_state-and-lifecycle",
+    "variant_type": "multi_hop",
+    "source_id": "qa_01"
+  },
+  {
+    "id": "qa_03_paraphrase",
+    "question": "What distinguishes useRef from useState when building React components with hooks?",
+    "answer": "useRef holds a mutable reference that does not trigger re-renders when mutated, whereas useState setter functions trigger component re-renders.",
+    "gold_chunk_ids": ["current_useRef_chunk0"],
+    "gold_doc_id": "current_useRef",
+    "variant_type": "paraphrase",
+    "source_id": "qa_03"
+  },
+  {
+    "id": "qa_03_negated",
+    "question": "Is it true that changing a useRef value causes the component to re-render immediately?",
+    "answer": "",
+    "gold_chunk_ids": [],
+    "gold_doc_id": "",
+    "variant_type": "negated",
+    "source_id": "qa_03"
+  },
+  {
+    "id": "qa_03_multi_hop",
+    "question": "How would you combine useRef and useState to build a stopwatch component that displays elapsed time?",
+    "answer": "Store the interval timer ID in a ref (so clearing it does not re-render), while storing the displayed elapsed time in useState to trigger UI updates.",
+    "gold_chunk_ids": ["current_useRef_chunk0", "current_state-a-components-memory_chunk0"],
+    "gold_doc_id": "current_useRef",
+    "variant_type": "multi_hop",
+    "source_id": "qa_03"
+  },
+  {
+    "id": "qa_04_paraphrase",
+    "question": "How can you share data across deeply nested components without manually passing props at every level?",
+    "answer": "Context API with useContext hook allows parent components to make data available to any child component deeply without passing props.",
+    "gold_chunk_ids": ["current_passing-data-deeply-with-context_chunk0"],
+    "gold_doc_id": "current_passing-data-deeply-with-context",
+    "variant_type": "paraphrase",
+    "source_id": "qa_04"
+  },
+  {
+    "id": "qa_04_negated",
+    "question": "Why is prop drilling always preferable to using Context for deeply nested data?",
+    "answer": "",
+    "gold_chunk_ids": [],
+    "gold_doc_id": "",
+    "variant_type": "negated",
+    "source_id": "qa_04"
+  },
+  {
+    "id": "qa_04_multi_hop",
+    "question": "How does the useContext hook replace the Consumer component pattern for reading context values inside nested function components?",
+    "answer": "useContext reads the value directly in one line, eliminating the nested render-prop pattern that MyContext.Consumer required in class-based code.",
+    "gold_chunk_ids": ["current_passing-data-deeply-with-context_chunk0", "legacy_context_chunk0"],
+    "gold_doc_id": "current_passing-data-deeply-with-context",
+    "variant_type": "multi_hop",
+    "source_id": "qa_04"
+  },
+  {
+    "id": "qa_05_paraphrase",
+    "question": "Which modern React pattern is the official alternative to class lifecycle methods?",
+    "answer": "Function components with Hooks like useState, useEffect, and useMemo are recommended for managing state and side effects.",
+    "gold_chunk_ids": ["current_Component_chunk0"],
+    "gold_doc_id": "current_Component",
+    "variant_type": "paraphrase",
+    "source_id": "qa_05"
+  },
+  {
+    "id": "qa_05_negated",
+    "question": "Are class components still the preferred approach in the latest React documentation?",
+    "answer": "",
+    "gold_chunk_ids": [],
+    "gold_doc_id": "",
+    "variant_type": "negated",
+    "source_id": "qa_05"
+  },
+  {
+    "id": "qa_05_multi_hop",
+    "question": "How do useEffect and useMemo together replace the combination of componentDidMount, shouldComponentUpdate, and componentWillUnmount?",
+    "answer": "useEffect handles mount and unmount side effects (replacing componentDidMount/componentWillUnmount), and useMemo memoizes expensive computations (replacing shouldComponentUpdate optimization logic).",
+    "gold_chunk_ids": ["current_Component_chunk0"],
+    "gold_doc_id": "current_Component",
+    "variant_type": "multi_hop",
+    "source_id": "qa_05"
+  },
+  {
+    "id": "qa_07_paraphrase",
+    "question": "What method do you call to create a reference object in class-based React?",
+    "answer": "In class components, refs are created using React.createRef() and attached to React elements via the ref attribute.",
+    "gold_chunk_ids": ["legacy_refs-and-the-dom_chunk0"],
+    "gold_doc_id": "legacy_refs-and-the-dom",
+    "variant_type": "paraphrase",
+    "source_id": "qa_07"
+  },
+  {
+    "id": "qa_07_negated",
+    "question": "Can you create refs in class components without calling React.createRef?",
+    "answer": "",
+    "gold_chunk_ids": [],
+    "gold_doc_id": "",
+    "variant_type": "negated",
+    "source_id": "qa_07"
+  },
+  {
+    "id": "qa_07_multi_hop",
+    "question": "How does the migration from React.createRef in class components to useRef in function components change how you manage focus?",
+    "answer": "Both produce a .current reference to the DOM node, but useRef is called at function scope without this, and persists across renders without constructor boilerplate.",
+    "gold_chunk_ids": ["legacy_refs-and-the-dom_chunk0", "current_useRef_chunk0"],
+    "gold_doc_id": "legacy_refs-and-the-dom",
+    "variant_type": "multi_hop",
+    "source_id": "qa_07"
+  }
+]

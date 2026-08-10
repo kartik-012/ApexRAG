@@ -1,0 +1,50 @@
+# ------ Python ------
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+*.egg
+dist/
+build/
+*.whl
+.eggs/
+
+# ------ Virtual environments ------
+venv/
+.venv/
+env/
+
+# ------ Data & Model artifacts ------
+data/chroma_db/
+data/chroma_eval_db/
+models/strategy_router.pkl
+
+# ------ IDE ------
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ------ OS ------
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ------ Environment ------
+.env
+
+# ------ Results (keep tracked via explicit commits) ------
+# results/eval_runs/
+# results/drift_logs/
+
+# ------ Test & coverage artifacts ------
+.pytest_cache/
+.coverage
+htmlcov/
+
+# ------ Raw doc clones (large, not committed) ------
+data/raw_docs/legacy/
+data/raw_docs/current/
+
+# ------ Jupyter notebooks (optional analysis) ------
+*.ipynb_checkpoints/

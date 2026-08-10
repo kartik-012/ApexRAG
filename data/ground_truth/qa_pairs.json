@@ -1,0 +1,810 @@
+[
+  {
+    "id": "q001",
+    "question": "What does calling `useState` do inside a component?",
+    "answer": "It declares a state variable that lets the component preserve a value between renders, returning the current value and a setter function.",
+    "gold_chunk_ids": [
+      "legacy_docs__hooks-state_chunk3"
+    ]
+  },
+  {
+    "id": "q002",
+    "question": "How does `useState` handle state updates with identical values?",
+    "answer": "If you update a state variable to the exact same value (using Object.is comparison), React will bail out without rendering the children or firing effects.",
+    "gold_chunk_ids": [
+      "legacy_docs__hooks-faq_chunk16"
+    ]
+  },
+  {
+    "id": "q003",
+    "question": "Can you update state based on the previous state?",
+    "answer": "Yes, by passing an updater function to the setter (e.g., setCounter(prev => prev + 1)).",
+    "gold_chunk_ids": [
+      "current_learn__queueing-a-series-of-state-updates_chunk8"
+    ]
+  },
+  {
+    "id": "q004",
+    "question": "Does `useState` merge objects like `this.setState` did?",
+    "answer": "No, the useState setter function completely replaces the state variable rather than merging it.",
+    "gold_chunk_ids": [
+      "legacy_docs__concurrent-mode-reference_chunk1"
+    ]
+  },
+  {
+    "id": "q005",
+    "question": "What is lazy initialization in `useState`?",
+    "answer": "You can pass a function to useState (e.g., useState(() => computeExpensiveValue())) which React will only call during the initial render.",
+    "gold_chunk_ids": [
+      "legacy_docs__hooks-faq_chunk10"
+    ]
+  },
+  {
+    "id": "q006",
+    "question": "What happens if you call a state setter during render?",
+    "answer": "It will cause an immediate re-render, which can lead to infinite loops if not guarded by a condition.",
+    "gold_chunk_ids": [
+      "current_reference__react__useRef_chunk5"
+    ]
+  },
+  {
+    "id": "q007",
+    "question": "Can multiple state updates be batched?",
+    "answer": "Yes, React batches multiple state updates into a single re-render for better performance.",
+    "gold_chunk_ids": [
+      "current_learn__queueing-a-series-of-state-updates_chunk0"
+    ]
+  },
+  {
+    "id": "q008",
+    "question": "How do you store a function in `useState`?",
+    "answer": "You must pass it as a callback (e.g., setFn(() => someFunction)), otherwise React assumes it's an updater function and executes it.",
+    "gold_chunk_ids": [
+      "current_reference__react__useSyncExternalStore_chunk4"
+    ]
+  },
+  {
+    "id": "q009",
+    "question": "What is the initial state value during a server-side render?",
+    "answer": "The initial state value is the same as the first render on the client, provided to the useState hook.",
+    "gold_chunk_ids": [
+      "current_reference__react__useState_chunk18"
+    ]
+  },
+  {
+    "id": "q010",
+    "question": "Is state shared between multiple instances of the same component?",
+    "answer": "No, state is isolated and private to each specific instance of a component on the screen.",
+    "gold_chunk_ids": [
+      "current_learn__state-a-components-memory_chunk27"
+    ]
+  },
+  {
+    "id": "q011",
+    "question": "What does `useEffect` let you synchronize a component with?",
+    "answer": "An external system \u2014 it lets you run side effects after render, outside the normal render logic.",
+    "gold_chunk_ids": [
+      "current_reference__react__useEffect_chunk0"
+    ]
+  },
+  {
+    "id": "q012",
+    "question": "When does the cleanup function in `useEffect` run?",
+    "answer": "Before the component unmounts, and before every subsequent execution of the effect (to clean up the previous effect).",
+    "gold_chunk_ids": [
+      "current_learn__synchronizing-with-effects_chunk22"
+    ]
+  },
+  {
+    "id": "q013",
+    "question": "What does an empty dependency array `[]` mean in `useEffect`?",
+    "answer": "The effect will only run once after the initial render, and its cleanup will run on unmount.",
+    "gold_chunk_ids": [
+      "current_learn__lifecycle-of-reactive-effects_chunk0"
+    ]
+  },
+  {
+    "id": "q014",
+    "question": "Why should you avoid omitting dependencies in `useEffect`?",
+    "answer": "Omitting dependencies can cause the effect to read stale props or state from previous renders.",
+    "gold_chunk_ids": [
+      "legacy_docs__hooks-faq_chunk1"
+    ]
+  },
+  {
+    "id": "q015",
+    "question": "How can you fetch data inside `useEffect` safely?",
+    "answer": "Use an AbortController or a boolean flag in the cleanup function to ignore stale responses if the component unmounts or dependencies change.",
+    "gold_chunk_ids": [
+      "current_learn__synchronizing-with-effects_chunk48"
+    ]
+  },
+  {
+    "id": "q016",
+    "question": "What is the difference between `useEffect` and `useLayoutEffect`?",
+    "answer": "useEffect runs asynchronously after paint, while useLayoutEffect runs synchronously before paint.",
+    "gold_chunk_ids": [
+      "legacy_docs__hooks-reference_chunk17"
+    ]
+  },
+  {
+    "id": "q017",
+    "question": "Why might `useEffect` fire twice in development mode?",
+    "answer": "React StrictMode intentionally double-invokes effects to help surface bugs related to improper cleanup.",
+    "gold_chunk_ids": [
+      "current_reference__react__StrictMode_chunk0"
+    ]
+  },
+  {
+    "id": "q018",
+    "question": "Can `useEffect` be used for data transformations before rendering?",
+    "answer": "No, it's better to calculate transformations directly during render or use useMemo to avoid unnecessary extra renders.",
+    "gold_chunk_ids": [
+      "legacy_docs__higher-order-components_chunk3"
+    ]
+  },
+  {
+    "id": "q019",
+    "question": "Should you place functions inside or outside of `useEffect`?",
+    "answer": "If a function is only used by the effect, declare it inside the effect to avoid unnecessary dependencies.",
+    "gold_chunk_ids": [
+      "current_reference__react__useEffect_chunk37"
+    ]
+  },
+  {
+    "id": "q020",
+    "question": "What happens if `useEffect` returns a Promise?",
+    "answer": "It's an error. Effects must return either nothing or a synchronous cleanup function. Async functions must be defined inside the effect.",
+    "gold_chunk_ids": [
+      "current_learn__conditional-rendering_chunk1"
+    ]
+  },
+  {
+    "id": "q021",
+    "question": "What determines the value returned by `useContext`?",
+    "answer": "The value prop of the nearest matching Context.Provider above the calling component in the tree.",
+    "gold_chunk_ids": [
+      "current_learn__manipulating-the-dom-with-refs_chunk2"
+    ]
+  },
+  {
+    "id": "q022",
+    "question": "What happens if there is no Context.Provider above the component?",
+    "answer": "useContext returns the default value passed to createContext.",
+    "gold_chunk_ids": [
+      "current_learn__passing-props-to-a-component_chunk4"
+    ]
+  },
+  {
+    "id": "q023",
+    "question": "Does a component re-render when its context value changes?",
+    "answer": "Yes, any component calling useContext will always re-render when the provider's value changes.",
+    "gold_chunk_ids": [
+      "legacy_docs__hooks-reference_chunk8"
+    ]
+  },
+  {
+    "id": "q024",
+    "question": "Can you use `useContext` outside of a component?",
+    "answer": "No, Hooks can only be called inside the body of a function component or a custom Hook.",
+    "gold_chunk_ids": [
+      "current_learn__javascript-in-jsx-with-curly-braces_chunk0"
+    ]
+  },
+  {
+    "id": "q025",
+    "question": "How do you optimize context consumers to avoid unnecessary renders?",
+    "answer": "Split context into multiple smaller contexts, or wrap the consumer in React.memo and pass context as a prop.",
+    "gold_chunk_ids": [
+      "current_learn__build-a-react-app-from-scratch_chunk6"
+    ]
+  },
+  {
+    "id": "q026",
+    "question": "What is Context primarily used for?",
+    "answer": "Sharing global or subtree-wide data like themes, authenticated user info, or routing state without prop drilling.",
+    "gold_chunk_ids": [
+      "current_learn__passing-data-deeply-with-context_chunk0"
+    ]
+  },
+  {
+    "id": "q027",
+    "question": "Can a single component provide multiple contexts?",
+    "answer": "Yes, by nesting multiple Provider components.",
+    "gold_chunk_ids": [
+      "legacy_docs__faq-structure_chunk1"
+    ]
+  },
+  {
+    "id": "q028",
+    "question": "What is the performance implication of using an object as a Provider value?",
+    "answer": "If the object is created inline, it will cause consumers to re-render on every parent render unless memoized with useMemo.",
+    "gold_chunk_ids": [
+      "current_reference__react__experimental_taintObjectReference_chunk1"
+    ]
+  },
+  {
+    "id": "q029",
+    "question": "How do you provide context to a portal?",
+    "answer": "Portals automatically inherit context from their React tree location, not their DOM location.",
+    "gold_chunk_ids": [
+      "legacy_docs__composition-vs-inheritance_chunk2"
+    ]
+  },
+  {
+    "id": "q030",
+    "question": "Does context replace Redux or state management?",
+    "answer": "Not entirely. Context is great for dependency injection, but lacks built-in tools for complex state transitions or middleware.",
+    "gold_chunk_ids": [
+      "legacy_docs__concurrent-mode-adoption_chunk3"
+    ]
+  },
+  {
+    "id": "q031",
+    "question": "What kind of value should you store in a `useRef`?",
+    "answer": "A mutable value that isn't needed for rendering, meaning it persists across renders without triggering a re-render when changed.",
+    "gold_chunk_ids": [
+      "current_learn__lifecycle-of-reactive-effects_chunk20"
+    ]
+  },
+  {
+    "id": "q032",
+    "question": "How do you access the current value of a ref?",
+    "answer": "Through its `.current` property.",
+    "gold_chunk_ids": [
+      "current_reference__react__useActionState_chunk16"
+    ]
+  },
+  {
+    "id": "q033",
+    "question": "When is a ref's `.current` property updated?",
+    "answer": "Immediately. Unlike state, mutations to a ref are completely synchronous.",
+    "gold_chunk_ids": [
+      "legacy_docs__faq-state_chunk2"
+    ]
+  },
+  {
+    "id": "q034",
+    "question": "What is a common DOM-related use case for `useRef`?",
+    "answer": "Storing a reference to a DOM node (e.g., to imperatively manage focus or text selection).",
+    "gold_chunk_ids": [
+      "current_learn__manipulating-the-dom-with-refs_chunk14"
+    ]
+  },
+  {
+    "id": "q035",
+    "question": "Can you pass a ref to a child component?",
+    "answer": "Yes, as a normal prop, or using `forwardRef` if you want the child to expose its own DOM node.",
+    "gold_chunk_ids": [
+      "current_reference__react__forwardRef_chunk0"
+    ]
+  },
+  {
+    "id": "q036",
+    "question": "Is it safe to read or write a ref during render?",
+    "answer": "No, reading or writing a ref during render breaks the pure nature of the render phase. Do it in event handlers or effects.",
+    "gold_chunk_ids": [
+      "current_reference__react__useRef_chunk5"
+    ]
+  },
+  {
+    "id": "q037",
+    "question": "Does `useRef` notify you when its content changes?",
+    "answer": "No, mutating `.current` does not trigger re-renders or any callbacks.",
+    "gold_chunk_ids": [
+      "legacy_docs__hooks-reference_chunk16"
+    ]
+  },
+  {
+    "id": "q038",
+    "question": "How can a child component restrict what's exposed via its ref?",
+    "answer": "By using the `useImperativeHandle` hook along with `forwardRef`.",
+    "gold_chunk_ids": [
+      "current_learn__manipulating-the-dom-with-refs_chunk8"
+    ]
+  },
+  {
+    "id": "q039",
+    "question": "How do you initialize a ref lazily?",
+    "answer": "Refs don't have built-in lazy initialization like useState, but you can conditionally set it: `if (ref.current === null) ref.current = init()`.",
+    "gold_chunk_ids": [
+      "legacy_docs__hooks-faq_chunk1"
+    ]
+  },
+  {
+    "id": "q040",
+    "question": "How does `useRef` differ from an outside-component variable?",
+    "answer": "An outside variable is shared across all component instances, whereas `useRef` is local to each specific instance.",
+    "gold_chunk_ids": [
+      "legacy_docs__state-and-lifecycle_chunk2"
+    ]
+  },
+  {
+    "id": "q041",
+    "question": "Under what condition does `useMemo` reuse a previous value?",
+    "answer": "When the dependencies haven't changed since the last render, it skips recomputation.",
+    "gold_chunk_ids": [
+      "legacy_docs__concurrent-mode-suspense_chunk13"
+    ]
+  },
+  {
+    "id": "q042",
+    "question": "What is the purpose of `useCallback`?",
+    "answer": "To return a memoized callback function that only changes if its dependencies change, useful for passing stable callbacks to optimized child components.",
+    "gold_chunk_ids": [
+      "legacy_docs__hooks-reference_chunk13"
+    ]
+  },
+  {
+    "id": "q043",
+    "question": "Does `useMemo` guarantee that the function won't run again?",
+    "answer": "No, React may clear the cache occasionally to free memory. It is a performance optimization, not a semantic guarantee.",
+    "gold_chunk_ids": [
+      "legacy_docs__hooks-faq_chunk28"
+    ]
+  },
+  {
+    "id": "q044",
+    "question": "When should you use `useMemo`?",
+    "answer": "For expensive calculations, or to memoize an object/array to maintain referential equality for child components.",
+    "gold_chunk_ids": [
+      "current_learn__react-compiler__introduction_chunk3"
+    ]
+  },
+  {
+    "id": "q045",
+    "question": "Is `useCallback(fn, deps)` equivalent to `useMemo`?",
+    "answer": "Yes, it is strictly equivalent to `useMemo(() => fn, deps)`.",
+    "gold_chunk_ids": [
+      "legacy_docs__addons-shallow-compare_chunk0"
+    ]
+  },
+  {
+    "id": "q046",
+    "question": "What happens if you leave the dependency array out of `useMemo`?",
+    "answer": "It will recompute the value on every single render, rendering the hook useless.",
+    "gold_chunk_ids": [
+      "current_reference__react__use_chunk9"
+    ]
+  },
+  {
+    "id": "q047",
+    "question": "Why shouldn't you memoize everything?",
+    "answer": "Memoization has its own performance cost (comparing dependencies) and memory overhead, which can make simple apps slower.",
+    "gold_chunk_ids": [
+      "legacy_docs__addons-perf_chunk0"
+    ]
+  },
+  {
+    "id": "q048",
+    "question": "How does `React.memo` differ from `useMemo`?",
+    "answer": "`React.memo` memoizes a whole component to prevent re-renders, while `useMemo` memoizes a specific value inside a component.",
+    "gold_chunk_ids": [
+      "legacy_docs__addons-pure-render-mixin_chunk0"
+    ]
+  },
+  {
+    "id": "q049",
+    "question": "Can `useMemo` cause infinite loops?",
+    "answer": "Not directly, but passing constantly changing dependencies will defeat the cache.",
+    "gold_chunk_ids": [
+      "current_learn__removing-effect-dependencies_chunk33"
+    ]
+  },
+  {
+    "id": "q050",
+    "question": "What is referential equality in the context of `useCallback`?",
+    "answer": "It means the function object reference remains exactly the same between renders (using Object.is), which helps prevent unnecessary re-renders in children.",
+    "gold_chunk_ids": [
+      "current_learn__react-compiler__debugging_chunk1"
+    ]
+  },
+  {
+    "id": "q051",
+    "question": "What are the three arguments `useReducer` accepts?",
+    "answer": "`reducer`, `initialArg`, and an optional `init` function.",
+    "gold_chunk_ids": [
+      "current_reference__react__useReducer_chunk0"
+    ]
+  },
+  {
+    "id": "q052",
+    "question": "When is `useReducer` preferred over `useState`?",
+    "answer": "When state logic is complex, involves multiple sub-values, or when the next state depends heavily on the previous state.",
+    "gold_chunk_ids": [
+      "current_learn__typescript_chunk8"
+    ]
+  },
+  {
+    "id": "q053",
+    "question": "What is a reducer function?",
+    "answer": "A pure function that takes the current state and an action, and returns the next state.",
+    "gold_chunk_ids": [
+      "current_learn__keeping-components-pure_chunk0"
+    ]
+  },
+  {
+    "id": "q054",
+    "question": "Can a reducer trigger side effects?",
+    "answer": "No, reducers must be pure functions without side effects.",
+    "gold_chunk_ids": [
+      "current_learn__keeping-components-pure_chunk0"
+    ]
+  },
+  {
+    "id": "q055",
+    "question": "How do you trigger a state change with `useReducer`?",
+    "answer": "By calling the `dispatch` function and passing an action object.",
+    "gold_chunk_ids": [
+      "current_learn__scaling-up-with-reducer-and-context_chunk7"
+    ]
+  },
+  {
+    "id": "q056",
+    "question": "What does the optional `init` function do in `useReducer`?",
+    "answer": "It allows for lazy initialization of the state, often used to compute the initial state based on props.",
+    "gold_chunk_ids": [
+      "legacy_docs__hooks-faq_chunk10"
+    ]
+  },
+  {
+    "id": "q057",
+    "question": "Is the `dispatch` function referentially stable?",
+    "answer": "Yes, React guarantees that `dispatch` function identity is stable and won't change on re-renders.",
+    "gold_chunk_ids": [
+      "legacy_docs__faq-versioning_chunk3"
+    ]
+  },
+  {
+    "id": "q058",
+    "question": "Can you pass `dispatch` down via Context?",
+    "answer": "Yes, passing `dispatch` through Context is a common pattern to avoid prop drilling in complex trees.",
+    "gold_chunk_ids": [
+      "current_learn__passing-data-deeply-with-context_chunk0"
+    ]
+  },
+  {
+    "id": "q059",
+    "question": "What should a reducer return if it doesn't recognize an action?",
+    "answer": "It should return the current state unchanged, or throw an error.",
+    "gold_chunk_ids": [
+      "legacy_docs__reference-glossary_chunk5"
+    ]
+  },
+  {
+    "id": "q060",
+    "question": "How do you handle async logic with `useReducer`?",
+    "answer": "Async logic should be handled in event handlers or effects before calling `dispatch`, keeping the reducer synchronous.",
+    "gold_chunk_ids": [
+      "legacy_docs__faq-state_chunk2"
+    ]
+  },
+  {
+    "id": "q061",
+    "question": "What is the Virtual DOM?",
+    "answer": "A lightweight in-memory representation of the actual DOM, which React uses to figure out the minimal set of changes needed to update the UI.",
+    "gold_chunk_ids": [
+      "legacy_docs__faq-internals_chunk0"
+    ]
+  },
+  {
+    "id": "q062",
+    "question": "What is a pure component?",
+    "answer": "A component that always renders the same output for the same state and props, without side effects during render.",
+    "gold_chunk_ids": [
+      "legacy_docs__hooks-faq_chunk32"
+    ]
+  },
+  {
+    "id": "q063",
+    "question": "What is the purpose of the `key` prop?",
+    "answer": "It helps React identify which items have changed, been added, or been removed in lists, maintaining their identity across renders.",
+    "gold_chunk_ids": [
+      "legacy_docs__lists-and-keys_chunk2"
+    ]
+  },
+  {
+    "id": "q064",
+    "question": "What happens if you use the array index as a `key`?",
+    "answer": "It can cause performance issues and bugs with state if the order of the list items changes.",
+    "gold_chunk_ids": [
+      "current_learn__tutorial-tic-tac-toe_chunk56"
+    ]
+  },
+  {
+    "id": "q065",
+    "question": "What is prop drilling?",
+    "answer": "The process of passing props down through multiple layers of components that don't need the data, just to reach a deeply nested child.",
+    "gold_chunk_ids": [
+      "current_learn__passing-data-deeply-with-context_chunk0"
+    ]
+  },
+  {
+    "id": "q066",
+    "question": "What is a Higher-Order Component (HOC)?",
+    "answer": "An advanced technique (mostly legacy) where a function takes a component and returns a new enhanced component.",
+    "gold_chunk_ids": [
+      "legacy_docs__higher-order-components_chunk0"
+    ]
+  },
+  {
+    "id": "q067",
+    "question": "What does lifting state up mean?",
+    "answer": "Moving state to the closest common ancestor of the components that need to read or update that state.",
+    "gold_chunk_ids": [
+      "legacy_docs__lifting-state-up_chunk0"
+    ]
+  },
+  {
+    "id": "q068",
+    "question": "What is JSX?",
+    "answer": "A syntax extension for JavaScript that looks similar to XML/HTML, used to describe what the UI should look like.",
+    "gold_chunk_ids": [
+      "current_learn__writing-markup-with-jsx_chunk2"
+    ]
+  },
+  {
+    "id": "q069",
+    "question": "How does React handle event delegation?",
+    "answer": "React attaches a single event listener to the root of the document to efficiently handle all events.",
+    "gold_chunk_ids": [
+      "legacy_docs__reference-events_chunk1"
+    ]
+  },
+  {
+    "id": "q070",
+    "question": "What is batching in React?",
+    "answer": "React groups multiple state updates into a single re-render to improve performance.",
+    "gold_chunk_ids": [
+      "current_reference__react__memo_chunk9"
+    ]
+  },
+  {
+    "id": "q071",
+    "question": "What is an Error Boundary?",
+    "answer": "A class component that catches JavaScript errors anywhere in its child component tree, logs them, and displays a fallback UI.",
+    "gold_chunk_ids": [
+      "legacy_docs__error-boundaries_chunk2"
+    ]
+  },
+  {
+    "id": "q072",
+    "question": "Which lifecycle methods are used to create an Error Boundary?",
+    "answer": "`static getDerivedStateFromError` and `componentDidCatch`.",
+    "gold_chunk_ids": [
+      "legacy_docs__reference-react-component_chunk13"
+    ]
+  },
+  {
+    "id": "q073",
+    "question": "Do Error Boundaries catch errors in event handlers?",
+    "answer": "No, they only catch errors during render, in lifecycle methods, and in constructors.",
+    "gold_chunk_ids": [
+      "current_learn__responding-to-events_chunk12"
+    ]
+  },
+  {
+    "id": "q074",
+    "question": "What is `<StrictMode>` used for?",
+    "answer": "To highlight potential problems in an application during development by enabling additional checks and warnings.",
+    "gold_chunk_ids": [
+      "current_reference__react__cloneElement_chunk8"
+    ]
+  },
+  {
+    "id": "q075",
+    "question": "Does `<StrictMode>` affect the production build?",
+    "answer": "No, Strict Mode checks are run in development mode only.",
+    "gold_chunk_ids": [
+      "legacy_docs__addons-perf_chunk1"
+    ]
+  },
+  {
+    "id": "q076",
+    "question": "Why does StrictMode render components twice?",
+    "answer": "To help detect side effects inside the render phase by making them more obvious.",
+    "gold_chunk_ids": [
+      "legacy_docs__reference-test-renderer_chunk1"
+    ]
+  },
+  {
+    "id": "q077",
+    "question": "What is a Portal in React?",
+    "answer": "A way to render children into a DOM node that exists outside the DOM hierarchy of the parent component.",
+    "gold_chunk_ids": [
+      "legacy_docs__portals_chunk0"
+    ]
+  },
+  {
+    "id": "q078",
+    "question": "What is the `<Profiler>` component used for?",
+    "answer": "To measure the rendering cost of a React tree and identify performance bottlenecks.",
+    "gold_chunk_ids": [
+      "legacy_docs__addons-perf_chunk1"
+    ]
+  },
+  {
+    "id": "q079",
+    "question": "What is Suspense used for?",
+    "answer": "To let components \"wait\" for something (like code splitting or data fetching) and show a fallback UI in the meantime.",
+    "gold_chunk_ids": [
+      "legacy_docs__error-boundaries_chunk1"
+    ]
+  },
+  {
+    "id": "q080",
+    "question": "How do you render a list of fragments without wrapper elements?",
+    "answer": "Use `<React.Fragment>` or the short `<>` syntax (though `<>` doesn't support keys).",
+    "gold_chunk_ids": [
+      "legacy_docs__fragments_chunk1"
+    ]
+  },
+  {
+    "id": "q081",
+    "question": "What is a Custom Hook?",
+    "answer": "A JavaScript function whose name starts with 'use' and that may call other Hooks.",
+    "gold_chunk_ids": [
+      "current_reference__react__use_chunk19"
+    ]
+  },
+  {
+    "id": "q082",
+    "question": "What is the primary rule of Hooks?",
+    "answer": "Only call Hooks at the top level of your component or custom hook. Never call them inside loops, conditions, or nested functions.",
+    "gold_chunk_ids": [
+      "legacy_docs__hooks-rules_chunk0"
+    ]
+  },
+  {
+    "id": "q083",
+    "question": "Why must Hooks be called at the top level?",
+    "answer": "So React can rely on the order of Hook calls to consistently match state variables and effects between multiple renders.",
+    "gold_chunk_ids": [
+      "current_reference__react__ViewTransition_chunk21"
+    ]
+  },
+  {
+    "id": "q084",
+    "question": "Can a custom hook return JSX?",
+    "answer": "Typically custom hooks return data or functions, not JSX (components return JSX), but it's technically valid JavaScript.",
+    "gold_chunk_ids": [
+      "current_learn__conditional-rendering_chunk1"
+    ]
+  },
+  {
+    "id": "q085",
+    "question": "Do custom hooks share state if used in multiple components?",
+    "answer": "No, the state and effects inside a custom hook are fully isolated every time you use it.",
+    "gold_chunk_ids": [
+      "legacy_docs__hooks-custom_chunk4"
+    ]
+  },
+  {
+    "id": "q086",
+    "question": "How should you name a custom hook?",
+    "answer": "It must start with 'use' followed by a capital letter, e.g., `useWindowSize`.",
+    "gold_chunk_ids": [
+      "current_learn__referencing-values-with-refs_chunk2"
+    ]
+  },
+  {
+    "id": "q087",
+    "question": "Can you call a hook conditionally?",
+    "answer": "No. If you need conditional logic, put the condition inside the hook (e.g., inside the useEffect callback).",
+    "gold_chunk_ids": [
+      "current_learn__reusing-logic-with-custom-hooks_chunk18"
+    ]
+  },
+  {
+    "id": "q088",
+    "question": "What is the ESLint plugin `eslint-plugin-react-hooks` for?",
+    "answer": "It enforces the Rules of Hooks and warns about missing dependencies in `useEffect` and `useMemo`.",
+    "gold_chunk_ids": [
+      "legacy_docs__concurrent-mode-suspense_chunk6"
+    ]
+  },
+  {
+    "id": "q089",
+    "question": "Is a custom hook just a regular function?",
+    "answer": "Yes, but by convention it allows you to compose and reuse stateful logic seamlessly.",
+    "gold_chunk_ids": [
+      "legacy_docs__hooks-intro_chunk3"
+    ]
+  },
+  {
+    "id": "q090",
+    "question": "Can custom hooks be tested independently?",
+    "answer": "Yes, usually by testing the components that use them, or via libraries like `@testing-library/react-hooks`.",
+    "gold_chunk_ids": [
+      "legacy_docs__concurrent-mode-intro_chunk6"
+    ]
+  },
+  {
+    "id": "q091",
+    "question": "What does `componentDidMount` do?",
+    "answer": "It is invoked immediately after a component is mounted, typically used for network requests or subscriptions.",
+    "gold_chunk_ids": [
+      "legacy_docs__reference-react-component_chunk5"
+    ]
+  },
+  {
+    "id": "q092",
+    "question": "What is the class equivalent of `useEffect` cleanup?",
+    "answer": "`componentWillUnmount` is called immediately before a component is destroyed to clean up resources.",
+    "gold_chunk_ids": [
+      "current_reference__react__Component_chunk11"
+    ]
+  },
+  {
+    "id": "q093",
+    "question": "How do you bind event handlers in a class component?",
+    "answer": "In the constructor using `.bind(this)`, or using class property arrow functions.",
+    "gold_chunk_ids": [
+      "legacy_docs__accessibility_chunk8"
+    ]
+  },
+  {
+    "id": "q094",
+    "question": "What is `getDerivedStateFromProps`?",
+    "answer": "A static lifecycle method invoked right before calling render, used to update state based on changes in props over time.",
+    "gold_chunk_ids": [
+      "legacy_docs__higher-order-components_chunk11"
+    ]
+  },
+  {
+    "id": "q095",
+    "question": "What does `shouldComponentUpdate` return by default?",
+    "answer": "It returns `true` by default, allowing the component to re-render. Returning `false` prevents the render.",
+    "gold_chunk_ids": [
+      "current_reference__react__Fragment_chunk4"
+    ]
+  },
+  {
+    "id": "q096",
+    "question": "What is `React.PureComponent`?",
+    "answer": "It is similar to `React.Component` but implements `shouldComponentUpdate` with a shallow prop and state comparison.",
+    "gold_chunk_ids": [
+      "legacy_docs__reference-react_chunk2"
+    ]
+  },
+  {
+    "id": "q097",
+    "question": "Can you use Hooks in a class component?",
+    "answer": "No, Hooks can only be used inside function components.",
+    "gold_chunk_ids": [
+      "current_learn__javascript-in-jsx-with-curly-braces_chunk0"
+    ]
+  },
+  {
+    "id": "q098",
+    "question": "What is `this.setState`'s optional second argument?",
+    "answer": "A callback function that is executed after the state is updated and the component is re-rendered.",
+    "gold_chunk_ids": [
+      "legacy_docs__reference-glossary_chunk7"
+    ]
+  },
+  {
+    "id": "q099",
+    "question": "How do you access Context in a class component without Consumer?",
+    "answer": "By assigning a context object to the `static contextType` property of the class.",
+    "gold_chunk_ids": [
+      "current_reference__react__Component_chunk28"
+    ]
+  },
+  {
+    "id": "q100",
+    "question": "What happens if you mutate `this.state` directly instead of using `setState`?",
+    "answer": "React will not know the state has changed and will not re-render the component.",
+    "gold_chunk_ids": [
+      "legacy_docs__state-and-lifecycle_chunk6"
+    ]
+  },
+  {
+    "id": "q101",
+    "question": "What gets sent to the RAG pipeline as the query",
+    "answer": "The correct human-verified answer \u2014 used for answer quality evaluation and interview credibility",
+    "gold_chunk_ids": [
+      "current_reference__react__Fragment_chunk11"
+    ]
+  }
+]
