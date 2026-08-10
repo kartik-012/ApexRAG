@@ -20,6 +20,18 @@
 
 ---
 
+## 📚 Project Documentation
+
+| # | Document | Description |
+|---|---|---|
+| 1 | 📖 [README](README.md) | System architecture, benchmarks, API reference, and quickstart |
+| 2 | 🏛️ [DECISIONS](DECISIONS.md) | Architecture Decision Records — why key design choices were made |
+| 3 | 🗃️ [SOURCES](SOURCES.md) | Verified corpus repositories, clone commands, and doc structure |
+| 4 | 🤝 [CONTRIBUTING](CONTRIBUTING.md) | Setup guide, code standards, testing requirements, and PR conventions |
+| 5 | ⚖️ [LICENSE](LICENSE) | MIT License |
+
+---
+
 ## Table of Contents
 
 1. [Project Overview](#1-project-overview)
