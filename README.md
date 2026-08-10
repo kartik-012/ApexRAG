@@ -2,7 +2,6 @@
 
 [![README](https://img.shields.io/badge/📖%20README-active-2ea44f?style=for-the-badge)](./README.md)&nbsp;[![Decisions](https://img.shields.io/badge/🏛️%20DECISIONS-ADR-6e40c9?style=for-the-badge)](./DECISIONS.md)&nbsp;[![Sources](https://img.shields.io/badge/🗃️%20SOURCES-corpus-0075ca?style=for-the-badge)](./SOURCES.md)&nbsp;[![Contributing](https://img.shields.io/badge/🤝%20CONTRIBUTING-guide-e36209?style=for-the-badge)](./CONTRIBUTING.md)&nbsp;[![License](https://img.shields.io/badge/⚖️%20LICENSE-MIT-lightgrey?style=for-the-badge)](./LICENSE)
 
----
 
 # ⚡ ApexRAG
 
@@ -10,7 +9,6 @@
 
 **A full-stack RAG evaluation harness benchmarking 5 retrieval strategies across 100 human-verified Q&A pairs — entirely on local hardware at $0 marginal cost.**
 
----
 
 [![Tests](https://img.shields.io/badge/tests-25%20passed-brightgreen?style=flat-square&logo=pytest)](./tests)
 [![Coverage](https://img.shields.io/badge/coverage-87%25-green?style=flat-square)](./tests)
@@ -22,7 +20,6 @@
 
 </div>
 
----
 
 ## 📚 Project Documentation
 
