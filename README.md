@@ -4,7 +4,7 @@
 
 # ⚡ ApexRA  
 
-### Production-Grade Retrieval-Augmented Generation System for React Documentation
+### Production-Grade Retrieval-Augmented Generation System for React Documentation 
 
 **A full-stack RAG evaluation harness benchmarking 5 retrieval strategies across 100 human-verified Q&A pairs — entirely on local hardware at $0 marginal cost.**
 
