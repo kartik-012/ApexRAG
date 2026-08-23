@@ -2,7 +2,7 @@
 
 [![README](https://img.shields.io/badge/📖%20README-active-2ea44f?style=for-the-badge)](./README.md)&nbsp;[![Decisions](https://img.shields.io/badge/🏛️%20DECISIONS-ADR-6e40c9?style=for-the-badge)](./DECISIONS.md)&nbsp;[![Sources](https://img.shields.io/badge/🗃️%20SOURCES-corpus-0075ca?style=for-the-badge)](./SOURCES.md)&nbsp;[![Contributing](https://img.shields.io/badge/🤝%20CONTRIBUTING-guide-e36209?style=for-the-badge)](./CONTRIBUTING.md)&nbsp;[![License](https://img.shields.io/badge/⚖️%20LICENSE-MIT-lightgrey?style=for-the-badge)](./LICENSE)
 
-# ⚡ ApexRA
+# ⚡ ApexRA  
 
 ### Production-Grade Retrieval-Augmented Generation System for React Documentation
 
