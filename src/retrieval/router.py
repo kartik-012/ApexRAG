@@ -280,10 +280,19 @@ class StrategyRouter:
 
         if use_bandit:
             base_decision = self.predict_routing_decision(question, query_embedding=query_embedding, use_bandit=False)
-            if base_decision.is_entropy_gated:
-                return base_decision  # Safety gating always overrides exploration
-
             bandit_arm, bandit_scores = self.bandit.sample_arm(context_probs=base_decision.probabilities)
+            if base_decision.is_entropy_gated:
+                return RoutingDecision(
+                    chosen_strategy=base_decision.chosen_strategy,
+                    raw_strategy=base_decision.raw_strategy,
+                    probabilities=base_decision.probabilities,
+                    entropy=base_decision.entropy,
+                    is_entropy_gated=True,
+                    gating_reason=base_decision.gating_reason,
+                    routing_confidence=base_decision.routing_confidence,
+                    bandit_scores=bandit_scores,
+                )
+
             return RoutingDecision(
                 chosen_strategy=bandit_arm,
                 raw_strategy=base_decision.raw_strategy,

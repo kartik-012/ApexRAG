@@ -37,3 +37,9 @@ def real_docs():
     """Loads the real React corpus for test isolation."""
     from src.ingestion.loader import load_legacy_docs, load_current_docs
     return load_legacy_docs("data/raw_docs/react-legacy") + load_current_docs("data/raw_docs/react-dev-current")
+
+
+@pytest.fixture
+def anyio_backend():
+    """Restricts anyio tests to the installed asyncio backend."""
+    return "asyncio"
