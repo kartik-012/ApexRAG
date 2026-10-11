@@ -33,9 +33,11 @@ desktop.ini
 # ------ Environment ------
 .env
 
-# ------ Results (keep tracked via explicit commits) ------
-# results/eval_runs/
-# results/drift_logs/
+# ------ Results & Test Runs ------
+results/eval_runs/
+results/drift_logs/
+results/benchmark_report_*.md
+reports/test_ci_gate_*.md
 
 # ------ Test & coverage artifacts ------
 .pytest_cache/
