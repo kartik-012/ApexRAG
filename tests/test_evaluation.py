@@ -38,3 +38,23 @@ def test_failure_attribution():
 
     fail_rank = attribute_failure("q1", ["c1", "c2"], {"c9"}, ["c1", "c2", "c9"], 0.9, False)
     assert fail_rank == FailureType.RETRIEVAL_RANK
+
+
+def test_cost_attribution_calculation():
+    from src.evaluation.cost_latency_tracker import estimate_query_cost_usd, estimate_cost_attribution
+
+    costs = estimate_query_cost_usd(tokens_in=1000, tokens_out=200, embedding_tokens=50, model_name="gpt-4o-mini")
+    assert costs["total_cost_usd"] > 0
+    assert "input_cost_usd" in costs
+    assert "output_cost_usd" in costs
+
+    attribution = estimate_cost_attribution(
+        question="What is useEffect?",
+        context_chunks=["useEffect handles side effects in React function components."],
+        answer="useEffect is a React Hook for managing side effects.",
+        model_name="gpt-4o",
+    )
+    assert attribution["model_name"] == "gpt-4o"
+    assert attribution["token_counts"]["total_tokens"] > 0
+    assert attribution["total_cost_usd"] > 0
+

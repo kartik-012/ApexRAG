@@ -77,14 +77,11 @@ def main():
 
     # ── Step 3: Active Learning Ground Truth Scan ────────────────────
     section("STEP 3 / 4 — Active Learning Ground Truth Scan")
-    all_results = []
-    for strat, res_list in [("semantic", eval_result["summary"].get("semantic", {}))]:
-        pass  # aggregate for flag scan
-    # Flatten per-question results from the hybrid strategy (most reliable)
-    flagged = flag_disagreements([], confidence_threshold=0.3)
+    hybrid_per_q = eval_result.get("per_question_results", {}).get("hybrid", [])
+    flagged = flag_disagreements(hybrid_per_q, confidence_threshold=0.3)
     print(f"  Ground truth questions flagged for review: {len(flagged)}")
     if flagged:
-        for f in flagged:
+        for f in flagged[:10]:
             print(f"    ↳ {f.get('qid', '?')} — {f.get('reason', '')}")
 
     # ── Step 4: Drift Detection ──────────────────────────────────────

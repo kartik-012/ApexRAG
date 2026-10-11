@@ -1,0 +1,23 @@
+# ==============================================================================
+# Prometheus Configuration for ApexRAG Real-Time Enterprise Observability
+# Scrapes Prometheus Exposition Metrics endpoint (/metrics) every 5s
+# ==============================================================================
+
+global:
+  scrape_interval: 5s
+  evaluation_interval: 5s
+  scrape_timeout: 4s
+
+scrape_configs:
+  - job_name: 'apexrag-api'
+    metrics_path: '/metrics'
+    scheme: 'http'
+    static_configs:
+      - targets: ['apexrag-api:8000']
+        labels:
+          environment: 'production'
+          service: 'apexrag-core'
+
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']

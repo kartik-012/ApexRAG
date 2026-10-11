@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ApexRAG Studio — Enterprise RAG Evaluation & Observability Platform</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: radial-gradient(circle at 15% 0%, #0f172a 0%, #020617 75%);
+      color: #e2e8f0;
+      min-height: 100vh;
+    }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    .glass {
+      background: rgba(15, 23, 42, 0.78);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(51, 65, 85, 0.65);
+    }
+    .glass-hover:hover {
+      border-color: rgba(56, 189, 248, 0.5);
+      box-shadow: 0 0 24px -6px rgba(56, 189, 248, 0.2);
+    }
+    .tab-active {
+      background: linear-gradient(135deg, rgba(14, 165, 233, 0.22), rgba(99, 102, 241, 0.22));
+      border-color: rgba(56, 189, 248, 0.7);
+      color: #38bdf8;
+    }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #090d16; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+  </style>
+</head>
+<body class="antialiased selection:bg-sky-500/30 selection:text-sky-200">
+
+  <!-- Top Navigation Header -->
+  <header class="sticky top-0 z-40 glass border-b border-slate-800/80">
+    <div class="max-w-[1440px] mx-auto px-6 py-3.5 flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-sky-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-sky-500/20 font-bold text-white text-lg">
+          ⚡
+        </div>
+        <div>
+          <div class="flex items-center gap-2.5">
+            <h1 class="text-lg font-bold tracking-tight text-white">ApexRAG Studio</h1>
+            <span class="text-[11px] mono uppercase px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 font-medium">$0 Local Inference</span>
+            <span id="health-pill" class="text-[11px] mono px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">Connecting...</span>
+          </div>
+          <p class="text-xs text-slate-400">Production Retrieval-Augmented Generation Harness • 5-Strategy Router • Uncertainty & Causal Attribution</p>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="flex items-center gap-2">
+        <button onclick="switchTab('playground')" id="tab-btn-playground" class="tab-active px-3.5 py-2 rounded-lg text-xs font-semibold border border-slate-700/80 transition flex items-center gap-1.5">
+          <span>⚡</span> Live RAG Playground
+        </button>
+        <button onclick="switchTab('compare')" id="tab-btn-compare" class="px-3.5 py-2 rounded-lg text-xs font-semibold border border-slate-800 text-slate-300 hover:text-white transition flex items-center gap-1.5">
+          <span>🔬</span> 5-Strategy Matrix
+        </button>
+        <button onclick="switchTab('benchmark')" id="tab-btn-benchmark" class="px-3.5 py-2 rounded-lg text-xs font-semibold border border-slate-800 text-slate-300 hover:text-white transition flex items-center gap-1.5">
+          <span>📊</span> 100-Q&A Benchmark & Pareto
+        </button>
+        <button onclick="switchTab('redteam')" id="tab-btn-redteam" class="px-3.5 py-2 rounded-lg text-xs font-semibold border border-slate-800 text-slate-300 hover:text-white transition flex items-center gap-1.5">
+          <span>🛡️</span> Red-Team & Multi-Judge Lab
+        </button>
+        <button onclick="switchTab('observability')" id="tab-btn-observability" class="px-3.5 py-2 rounded-lg text-xs font-semibold border border-slate-800 text-slate-300 hover:text-white transition flex items-center gap-1.5">
+          <span>📡</span> Observability & Tracing
+        </button>
+        <a href="/metrics" target="_blank" class="px-3 py-2 rounded-lg text-xs font-medium bg-emerald-950/60 hover:bg-emerald-900/80 text-emerald-300 border border-emerald-800/80 transition flex items-center gap-1">
+          <span>📊</span> /metrics ↗
+        </a>
+        <a href="/traces" target="_blank" class="px-3 py-2 rounded-lg text-xs font-medium bg-sky-950/60 hover:bg-sky-900/80 text-sky-300 border border-sky-800/80 transition flex items-center gap-1">
+          <span>🔍</span> /traces ↗
+        </a>
+        <a href="/docs" target="_blank" class="px-3 py-2 rounded-lg text-xs font-medium bg-slate-800/80 hover:bg-slate-700 text-slate-300 border border-slate-700 transition">
+          OpenAPI ↗
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- System Status Telemetry Bar -->
+  <div class="bg-slate-950/70 border-b border-slate-800/70">
+    <div class="max-w-[1440px] mx-auto px-6 py-2 flex flex-wrap items-center justify-between gap-4 text-xs text-slate-400">
+      <div class="flex flex-wrap items-center gap-5">
+        <div>Indexed Chunks: <span id="stat-chunks" class="mono text-sky-400 font-semibold">—</span> <span id="stat-eras" class="text-slate-500"></span></div>
+        <div>Embedder: <span id="stat-embedder" class="mono text-slate-200">BAAI/bge-small-en-v1.5</span></div>
+        <div>Re-Ranker: <span id="stat-reranker" class="mono text-slate-200">ms-marco-MiniLM-L-6-v2</span></div>
+        <div>ML Router: <span id="stat-router" class="mono text-emerald-400">Active</span></div>
+      </div>
+      <div class="flex items-center gap-4">
+        <div>Semantic Cache: <span id="stat-cache" class="mono text-indigo-400">0 hits (0.0%)</span></div>
+        <button onclick="clearCache()" class="text-[11px] text-slate-400 hover:text-rose-400 underline">Reset Cache</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Workspace Container -->
+  <main class="max-w-[1440px] mx-auto px-6 py-6">
+
+    <!-- ===================================================================== -->
+    <!-- TAB 1: LIVE RAG PLAYGROUND                                            -->
+    <!-- ===================================================================== -->
+    <section id="tab-playground" class="space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- Left Column: Query Controls & Results (8 cols) -->
+        <div class="lg:col-span-8 space-y-5">
+          <!-- Query Input Card -->
+          <div class="glass rounded-2xl p-5 space-y-4">
+            <div class="flex items-center justify-between">
+              <label class="text-xs font-semibold uppercase tracking-wider text-sky-400">Ask React Documentation (v17 Legacy Classes + React 18/19 Hooks)</label>
+              <span class="text-[11px] text-slate-400">Try a preset query below:</span>
+            </div>
+
+            <!-- Preset Question Pills -->
+            <div class="flex flex-wrap gap-1.5">
+              <button onclick="setQuestion('What does calling `useState` do inside a component and how does it handle identical values?')" class="text-xs px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-sky-500/20 hover:text-sky-300 border border-slate-700/80 transition">useState & bailout</button>
+              <button onclick="setQuestion('When does the cleanup function in `useEffect` run vs `componentWillUnmount`?')" class="text-xs px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-sky-500/20 hover:text-sky-300 border border-slate-700/80 transition">useEffect vs componentWillUnmount</button>
+              <button onclick="setQuestion('What is the difference between `useEffect` and `useLayoutEffect`?')" class="text-xs px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-sky-500/20 hover:text-sky-300 border border-slate-700/80 transition">useEffect vs useLayoutEffect</button>
+              <button onclick="setQuestion('How do you initialize state and bind event handlers in a legacy class component?')" class="text-xs px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-sky-500/20 hover:text-sky-300 border border-slate-700/80 transition">Class Component setState</button>
+              <button onclick="setQuestion('How does `useRef` work and is it safe to read or write a ref during render?')" class="text-xs px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-sky-500/20 hover:text-sky-300 border border-slate-700/80 transition">useRef rules</button>
+            </div>
+
+            <div class="relative">
+              <textarea id="query-input" rows="2" class="w-full rounded-xl bg-slate-950/90 border border-slate-700/80 focus:border-sky-500 focus:outline-none p-3.5 text-sm text-white placeholder-slate-500" placeholder="Ask any technical question about React hooks, rendering, refs, context, or class lifecycles...">When does the cleanup function in `useEffect` run?</textarea>
+            </div>
+
+            <!-- Pipeline Parameters Bar -->
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 pt-1">
+              <div>
+                <label class="block text-[11px] text-slate-400 mb-1">Retrieval Strategy</label>
+                <select id="query-strategy" class="w-full rounded-lg bg-slate-900 border border-slate-700 px-2.5 py-1.5 text-xs text-white">
+                  <option value="auto">🤖 Auto (ML Router)</option>
+                  <option value="rerank">🎯 Cross-Encoder Rerank</option>
+                  <option value="hybrid">⚡ Hybrid RRF (k=60)</option>
+                  <option value="semantic">🧠 Dense Semantic</option>
+                  <option value="simple">🔤 BM25 Keyword</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-[11px] text-slate-400 mb-1">Corpus Era Filter</label>
+                <select id="query-era" class="w-full rounded-lg bg-slate-900 border border-slate-700 px-2.5 py-1.5 text-xs text-white">
+                  <option value="all">🌐 All Eras (v17 + Modern)</option>
+                  <option value="current">⚛️ Modern Hooks (react.dev)</option>
+                  <option value="legacy">🏛️ Legacy Classes (v17)</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-[11px] text-slate-400 mb-1">Top-K Chunks</label>
+                <select id="query-topk" class="w-full rounded-lg bg-slate-900 border border-slate-700 px-2.5 py-1.5 text-xs text-white">
+                  <option value="4" selected>Top 4 (Standard)</option>
+                  <option value="2">Top 2 (Focused)</option>
+                  <option value="6">Top 6 (Deep Context)</option>
+                  <option value="8">Top 8 (Wide Recall)</option>
+                </select>
+              </div>
+              <div class="flex flex-col justify-end">
+                <label class="flex items-center gap-2 text-xs text-slate-300 cursor-pointer py-1">
+                  <input type="checkbox" id="query-expand" checked class="rounded bg-slate-900 border-slate-700 text-sky-500" />
+                  <span>Expansion</span>
+                </label>
+                <label class="flex items-center gap-2 text-xs text-emerald-400 cursor-pointer py-1 font-medium">
+                  <input type="checkbox" id="query-stream" checked class="rounded bg-slate-900 border-slate-700 text-emerald-500" />
+                  <span>⚡ SSE Stream</span>
+                </label>
+              </div>
+              <div class="flex items-end">
+                <button onclick="executeQuery()" id="run-query-btn" class="w-full py-2 px-4 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-semibold text-xs shadow-lg shadow-sky-500/20 transition flex items-center justify-center gap-1.5">
+                  <span>Run Pipeline</span>
+                  <span>→</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Synthesized Answer & Actions Card -->
+          <div id="answer-panel" class="glass rounded-2xl p-5 space-y-4">
+            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3">
+              <div class="flex items-center gap-2.5">
+                <span class="text-xs font-bold uppercase tracking-wider text-emerald-400">Context-Grounded Generation</span>
+                <span id="ans-strategy-badge" class="text-[11px] mono px-2 py-0.5 rounded bg-sky-500/15 text-sky-300 border border-sky-500/30">strategy: auto</span>
+                <span id="ans-cache-badge" class="hidden text-[11px] mono px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/40">⚡ CACHE HIT</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <button onclick="verifyFaithfulnessFromPlayground()" class="text-[11px] px-2.5 py-1 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 transition">
+                  ⚖️ Run Multi-Judge Debate
+                </button>
+                <button onclick="compareFromPlayground()" class="text-[11px] px-2.5 py-1 rounded-lg bg-sky-500/15 hover:bg-sky-500/25 text-sky-300 border border-sky-500/30 transition">
+                  🔬 Compare All 5 Strategies
+                </button>
+              </div>
+            </div>
+
+            <div id="ans-warning" class="hidden rounded-xl bg-amber-500/10 border border-amber-500/30 p-3 text-xs text-amber-300"></div>
+
+            <div id="ans-text" class="text-sm leading-relaxed text-slate-100 whitespace-pre-line">
+              Click <strong>Run Pipeline</strong> to execute retrieval, uncertainty quantification, and context-grounded answer generation.
+            </div>
+
+            <!-- Inline Multi-Judge Debate Output (when triggered) -->
+            <div id="inline-debate-box" class="hidden rounded-xl bg-slate-950/90 border border-emerald-500/30 p-3.5 space-y-2 text-xs"></div>
+          </div>
+
+          <!-- Retrieved Chunks List -->
+          <div class="glass rounded-2xl p-5 space-y-3">
+            <div class="flex items-center justify-between">
+              <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300">Retrieved Documentation Chunks (<span id="chunk-count-label">0</span>)</h3>
+              <span class="text-[11px] text-slate-400">Sorted by selected strategy relevance</span>
+            </div>
+            <div id="retrieved-chunks-list" class="space-y-3">
+              <div class="text-xs text-slate-500 py-4 text-center">No chunks retrieved yet.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Uncertainty, Router & Latency Telemetry (4 cols) -->
+        <div class="lg:col-span-4 space-y-5">
+
+          <!-- Uncertainty Quantification Card -->
+          <div class="glass rounded-2xl p-5 space-y-4">
+            <div class="flex items-center justify-between">
+              <h3 class="text-xs font-bold uppercase tracking-wider text-sky-400">Uncertainty Quantification</h3>
+              <span id="conf-badge" class="text-xs mono font-bold px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">—</span>
+            </div>
+
+            <div class="space-y-3">
+              <div>
+                <div class="flex justify-between text-xs mb-1">
+                  <span class="text-slate-400">Strategy Agreement Consensus</span>
+                  <span id="val-agreement" class="mono text-emerald-400 font-semibold">0.00</span>
+                </div>
+                <div class="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
+                  <div id="bar-agreement" class="h-full bg-gradient-to-r from-emerald-500 to-teal-400 transition-all duration-300" style="width: 0%"></div>
+                </div>
+                <p class="text-[11px] text-slate-500 mt-1">Fraction of retrieval strategies agreeing on the top-1 chunk (≥0.50 optimal).</p>
+              </div>
+
+              <div>
+                <div class="flex justify-between text-xs mb-1">
+                  <span class="text-slate-400">Embedding Cluster Spread</span>
+                  <span id="val-spread" class="mono text-sky-400 font-semibold">0.00</span>
+                </div>
+                <div class="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
+                  <div id="bar-spread" class="h-full bg-gradient-to-r from-sky-500 to-indigo-500 transition-all duration-300" style="width: 0%"></div>
+                </div>
+                <p class="text-[11px] text-slate-500 mt-1">Pairwise cosine distance among top-K chunks (≤0.35 indicates tight cluster).</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- ML Strategy Router Probabilities Card -->
+          <div class="glass rounded-2xl p-5 space-y-3">
+            <div class="flex items-center justify-between">
+              <h3 class="text-xs font-bold uppercase tracking-wider text-indigo-400">ML Strategy Router Dispatch</h3>
+              <span class="text-[11px] mono text-slate-400">LogisticRegression</span>
+            </div>
+            <div id="router-probs-list" class="space-y-2 text-xs">
+              <div class="text-slate-500 text-xs">Run a query to inspect router dispatch probabilities.</div>
+            </div>
+          </div>
+
+          <!-- Query Intelligence & Stage Latency Breakdown Card -->
+          <div class="glass rounded-2xl p-5 space-y-4">
+            <div class="flex items-center justify-between">
+              <h3 class="text-xs font-bold uppercase tracking-wider text-amber-400">Pipeline Stage Latencies</h3>
+              <span id="total-latency-badge" class="mono text-xs font-semibold text-white">0.0 ms</span>
+            </div>
+            <div id="stage-latency-list" class="space-y-2 text-xs">
+              <div class="text-slate-500">Awaiting query execution...</div>
+            </div>
+
+            <div class="border-t border-slate-800 pt-3 space-y-1.5 text-xs">
+              <div class="text-[11px] font-semibold uppercase text-slate-400">Query Intelligence Analysis</div>
+              <div>Detected Era: <span id="qa-era" class="mono text-sky-300">—</span></div>
+              <div>Complexity: <span id="qa-complexity" class="mono text-indigo-300">—</span></div>
+              <div>Code Symbols: <span id="qa-symbols" class="mono text-emerald-300">—</span></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- TAB 2: 5-STRATEGY SIDE-BY-SIDE MATRIX                                 -->
+    <!-- ===================================================================== -->
+    <section id="tab-compare" class="hidden space-y-6">
+      <div class="glass rounded-2xl p-5 flex flex-wrap items-center justify-between gap-4">
+        <div class="flex-1 min-w-[280px]">
+          <label class="block text-xs font-bold uppercase tracking-wider text-sky-400 mb-1">5-Strategy Side-by-Side Retrieval Comparator</label>
+          <input id="compare-input" type="text" value="When does the cleanup function in `useEffect` run?" class="w-full rounded-xl bg-slate-950 border border-slate-700 px-3.5 py-2 text-sm text-white" />
+        </div>
+        <div class="flex items-center gap-3">
+          <button onclick="runComparisonMatrix()" id="btn-compare-run" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 text-white font-semibold text-xs shadow-lg">
+            🔬 Compare All 5 Strategies Live
+          </button>
+        </div>
+      </div>
+
+      <!-- 5-Column Strategy Grid -->
+      <div id="compare-matrix-grid" class="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-5 gap-4">
+        <div class="col-span-full glass rounded-2xl p-8 text-center text-slate-400 text-sm">
+          Click <strong>Compare All 5 Strategies Live</strong> to inspect rank shifts, RRF fusion scores, and cross-encoder re-ranking side-by-side.
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- TAB 3: 100-Q&A BENCHMARK, PARETO FRONTIER & DRIFT                     -->
+    <!-- ===================================================================== -->
+    <section id="tab-benchmark" class="hidden space-y-6">
+      <div class="glass rounded-2xl p-5 flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <h2 class="text-base font-bold text-white">100-Question Ground-Truth Evaluation Harness & Causal Attribution</h2>
+          <p class="text-xs text-slate-400">Evaluates BM25, Semantic, Hybrid RRF, Cross-Encoder Rerank, and ML Router across 2,580 real React documentation chunks.</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <button onclick="loadBenchmarkData()" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 border border-slate-700">
+            ↻ Refresh Saved Run
+          </button>
+          <button onclick="triggerLiveEval()" id="btn-trigger-eval" class="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 text-xs font-semibold text-white shadow-lg">
+            ▶ Run Full Evaluation Harness
+          </button>
+        </div>
+      </div>
+
+      <!-- Benchmark Summary Cards -->
+      <div id="benchmark-cards" class="grid grid-cols-1 md:grid-cols-5 gap-4"></div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Strategy Performance Table & Failure Attribution (8 cols) -->
+        <div class="lg:col-span-8 glass rounded-2xl p-5 space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-sky-400">Strategy Leaderboard & Causal Failure Attribution</h3>
+            <span id="bench-timestamp" class="text-[11px] mono text-slate-400"></span>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr class="border-b border-slate-800 text-slate-400 uppercase text-[11px]">
+                  <th class="py-2.5 px-3">Strategy</th>
+                  <th class="py-2.5 px-3">Recall@4</th>
+                  <th class="py-2.5 px-3">MRR</th>
+                  <th class="py-2.5 px-3">nDCG@4</th>
+                  <th class="py-2.5 px-3">Accuracy</th>
+                  <th class="py-2.5 px-3">Latency</th>
+                  <th class="py-2.5 px-3">Miss / Rank / Bound</th>
+                </tr>
+              </thead>
+              <tbody id="benchmark-table-body" class="divide-y divide-slate-800/60 mono"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Pareto Optimal & Corpus Drift Status (4 cols) -->
+        <div class="lg:col-span-4 space-y-5">
+          <div class="glass rounded-2xl p-5 space-y-3">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-emerald-400">Pareto-Optimal SLA Selector (≤300ms)</h3>
+            <div id="pareto-card" class="text-xs text-slate-300 space-y-1">Loading...</div>
+          </div>
+
+          <div class="glass rounded-2xl p-5 space-y-3">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-amber-400">Embedding Centroid Drift Monitor</h3>
+            <div id="drift-card" class="text-xs text-slate-300 space-y-1">Loading...</div>
+          </div>
+
+          <div class="glass rounded-2xl p-5 space-y-3">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-rose-400">Active Learning Disagreement Flags</h3>
+            <div id="flags-card" class="text-xs text-slate-300 space-y-1.5 max-h-48 overflow-y-auto">Loading...</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- TAB 4: RED-TEAM ADVERSARIAL & MULTI-JUDGE DEBATE LAB                  -->
+    <!-- ===================================================================== -->
+    <section id="tab-redteam" class="hidden space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+        <!-- Adversarial & Counterfactual Generator -->
+        <div class="glass rounded-2xl p-5 space-y-4">
+          <div>
+            <h3 class="text-sm font-bold text-white">🔥 Adversarial Query & Counterfactual Decoy Generator</h3>
+            <p class="text-xs text-slate-400">Generates Paraphrase, Negated Trick, and Multi-Hop stress variants + a near-duplicate Counterfactual Decoy chunk with 1 altered fact.</p>
+          </div>
+          <input id="adv-question" type="text" value="What does calling `useState` do inside a component?" class="w-full rounded-xl bg-slate-950 border border-slate-700 px-3.5 py-2 text-xs text-white" />
+          <button onclick="runAdversarialLab()" id="btn-adv" class="px-4 py-2 rounded-xl bg-gradient-to-r from-rose-500 to-orange-500 text-white text-xs font-semibold">
+            Generate Adversarial Variants & Decoy
+          </button>
+          <div id="adv-output" class="space-y-3 text-xs"></div>
+        </div>
+
+        <!-- Dual-LLM Multi-Judge Faithfulness Debate -->
+        <div class="glass rounded-2xl p-5 space-y-4">
+          <div>
+            <h3 class="text-sm font-bold text-white">⚖️ Dual-LLM Faithfulness Debate Protocol</h3>
+            <p class="text-xs text-slate-400">Pairs <code class="text-sky-300">llama3.1:8b</code> (Judge A) and <code class="text-indigo-300">phi3:mini</code> (Judge B) to verify context grounding and eliminate single-model self-preference bias.</p>
+          </div>
+          <div class="space-y-2.5">
+            <input id="debate-q" type="text" value="Does useState merge objects like this.setState?" class="w-full rounded-xl bg-slate-950 border border-slate-700 px-3 py-2 text-xs text-white" placeholder="Question" />
+            <textarea id="debate-ctx" rows="3" class="w-full rounded-xl bg-slate-950 border border-slate-700 p-3 text-xs text-white" placeholder="Retrieved Context">Unlike this.setState in class components, updating a state variable with useState always replaces it instead of merging it.</textarea>
+            <textarea id="debate-ans" rows="2" class="w-full rounded-xl bg-slate-950 border border-slate-700 p-3 text-xs text-white" placeholder="Candidate Answer">No, the useState setter replaces the state variable completely rather than merging objects.</textarea>
+          </div>
+          <button onclick="runDebateLab()" id="btn-debate" class="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-xs font-semibold">
+            Run Dual-Judge Arbitration
+          </button>
+          <div id="debate-output" class="space-y-3 text-xs"></div>
+        </div>
+
+      </div>
+    <!-- ===================================================================== -->
+    <!-- TAB 5: OBSERVABILITY, OPENTELEMETRY TRACING & PROMETHEUS METRICS        -->
+    <!-- ===================================================================== -->
+    <section id="tab-observability" class="space-y-6 hidden">
+      <!-- Top Overview Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="glass rounded-2xl p-4 space-y-1">
+          <div class="text-[11px] font-semibold uppercase text-slate-400">Total HTTP Requests</div>
+          <div id="obs-stat-requests" class="text-2xl font-bold mono text-sky-400">—</div>
+          <div class="text-[11px] text-slate-500">Counter: apexrag_requests_total</div>
+        </div>
+        <div class="glass rounded-2xl p-4 space-y-1">
+          <div class="text-[11px] font-semibold uppercase text-slate-400">Semantic Cache Hit Rate</div>
+          <div id="obs-stat-cache" class="text-2xl font-bold mono text-indigo-400">—</div>
+          <div class="text-[11px] text-slate-500">Telemetry: hits / total</div>
+        </div>
+        <div class="glass rounded-2xl p-4 space-y-1">
+          <div class="text-[11px] font-semibold uppercase text-slate-400">Concurrency Permitted</div>
+          <div id="obs-stat-semaphore" class="text-2xl font-bold mono text-emerald-400">—</div>
+          <div class="text-[11px] text-slate-500">Permits: apexrag_active_semaphore_permits</div>
+        </div>
+        <div class="glass rounded-2xl p-4 space-y-1">
+          <div class="text-[11px] font-semibold uppercase text-slate-400">Entropy Fallbacks</div>
+          <div id="obs-stat-entropy" class="text-2xl font-bold mono text-amber-400">—</div>
+          <div class="text-[11px] text-slate-500">Safety net: H(P) > 1.25 bits</div>
+        </div>
+      </div>
+
+      <!-- Main Observability Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Left: OpenTelemetry Waterfall Flamegraph (7 cols) -->
+        <div class="lg:col-span-7 space-y-4">
+          <div class="glass rounded-2xl p-5 space-y-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                  <span>⏱️</span> Distributed Trace Waterfall & Span Hierarchy
+                </h3>
+                <p class="text-xs text-slate-400">OpenTelemetry W3C trace spans showing per-stage latency execution profile.</p>
+              </div>
+              <button onclick="loadObservabilityData()" class="px-2.5 py-1 rounded-lg text-xs bg-slate-800 hover:bg-slate-700 text-sky-300 border border-slate-700 transition">
+                ↻ Refresh
+              </button>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <label class="text-xs text-slate-400">Select Trace:</label>
+              <select id="obs-trace-select" onchange="renderSelectedTrace()" class="flex-1 text-xs rounded-lg bg-slate-900 border border-slate-700 px-2.5 py-1.5 text-slate-200 mono">
+                <option value="">Loading recent traces...</option>
+              </select>
+            </div>
+
+            <div id="obs-waterfall-container" class="space-y-2 pt-2">
+              <div class="text-xs text-slate-500 italic text-center py-6">Run a query in Playground or Compare tab to capture OpenTelemetry spans.</div>
+            </div>
+          </div>
+
+          <!-- Strategy Router & Stage Breakdown -->
+          <div class="glass rounded-2xl p-5 space-y-3">
+            <h3 class="text-sm font-bold text-white flex items-center gap-2">
+              <span>🔀</span> Strategy Router & Pipeline Stage Latency Profile
+            </h3>
+            <div id="obs-stages-list" class="space-y-2 text-xs">
+              <div class="text-slate-500">No stage samples recorded yet.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Live Prometheus /metrics Exposition (5 cols) -->
+        <div class="lg:col-span-5 space-y-4">
+          <div class="glass rounded-2xl p-5 space-y-3">
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="text-sm font-bold text-emerald-400 flex items-center gap-2">
+                  <span>📊</span> Live Prometheus /metrics Stream
+                </h3>
+                <p class="text-[11px] text-slate-400">Standard Prometheus 0.0.4 exposition text format for scrapers.</p>
+              </div>
+              <a href="/metrics" target="_blank" class="text-xs text-sky-400 hover:underline">Full Text ↗</a>
+            </div>
+
+            <div class="relative">
+              <pre id="obs-metrics-raw" class="mono text-[11px] text-emerald-300/90 bg-slate-950 rounded-xl p-4 border border-slate-800 max-h-[500px] overflow-y-auto whitespace-pre-wrap leading-relaxed">Loading /metrics exposition...</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    let lastPlaygroundResponse = null;
+    let cachedTraces = [];
+
+    function switchTab(tabName) {
+      ['playground', 'compare', 'benchmark', 'redteam', 'observability'].forEach(t => {
+        document.getElementById(`tab-${t}`).classList.toggle('hidden', t !== tabName);
+        const btn = document.getElementById(`tab-btn-${t}`);
+        if (t === tabName) {
+          btn.classList.add('tab-active');
+        } else {
+          btn.classList.remove('tab-active');
+        }
+      });
+      if (tabName === 'benchmark') loadBenchmarkData();
+      if (tabName === 'observability') loadObservabilityData();
+    }
+
+    function setQuestion(q) {
+      document.getElementById('query-input').value = q;
+      executeQuery();
+    }
+
+    async function refreshHealth() {
+      try {
+        const res = await fetch('/health');
+        const data = await res.json();
+        const pill = document.getElementById('health-pill');
+        pill.textContent = `● ONLINE (${data.indexed_chunks} chunks)`;
+        pill.className = 'text-[11px] mono px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30';
+        document.getElementById('stat-chunks').textContent = data.indexed_chunks;
+        if (data.era_breakdown) {
+          document.getElementById('stat-eras').textContent = `(legacy: ${data.era_breakdown.legacy || 0}, current: ${data.era_breakdown.current || 0})`;
+        }
+        if (data.models) {
+          document.getElementById('stat-embedder').textContent = data.models.embedding;
+          document.getElementById('stat-reranker').textContent = data.models.reranker.split('/').pop();
+          document.getElementById('stat-router').textContent = data.models.router_loaded ? 'Trained ML Active' : 'Heuristic Active';
+        }
+        if (data.cache) {
+          const rate = ((data.cache.hit_rate || 0) * 100).toFixed(0);
+          document.getElementById('stat-cache').textContent = `${data.cache.hits} hits (${rate}% | saved ${data.cache.saved_latency_ms}ms)`;
+        }
+      } catch (e) {
+        const pill = document.getElementById('health-pill');
+        pill.textContent = '● OFFLINE';
+      }
+    }
+
+    async function clearCache() {
+      await fetch('/cache/clear', { method: 'POST' });
+      await refreshHealth();
+    }
+
+    function renderMetadataAndUncertainty(data) {
+      document.getElementById('ans-strategy-badge').textContent = `strategy: ${(data.strategy_used || 'auto').toUpperCase()}`;
+      const cacheBadge = document.getElementById('ans-cache-badge');
+      cacheBadge.classList.toggle('hidden', !data.cache_hit);
+
+      const warnBox = document.getElementById('ans-warning');
+      if (data.warning) {
+        warnBox.textContent = data.warning;
+        warnBox.classList.remove('hidden');
+      } else {
+        warnBox.classList.add('hidden');
+      }
+
+      // Render Uncertainty
+      const confBadge = document.getElementById('conf-badge');
+      confBadge.textContent = data.confidence || '—';
+      if (data.confidence === 'HIGH') {
+        confBadge.className = 'text-xs mono font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40';
+      } else if (data.confidence === 'MEDIUM') {
+        confBadge.className = 'text-xs mono font-bold px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40';
+      } else {
+        confBadge.className = 'text-xs mono font-bold px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/40';
+      }
+
+      document.getElementById('val-agreement').textContent = `${((data.agreement_score || 0) * 100).toFixed(0)}% (${data.agreement_score || 0})`;
+      document.getElementById('bar-agreement').style.width = `${Math.min(100, (data.agreement_score || 0) * 100)}%`;
+
+      document.getElementById('val-spread').textContent = (data.spread_score || 0).toFixed(4);
+      document.getElementById('bar-spread').style.width = `${Math.min(100, (data.spread_score || 0) * 100)}%`;
+
+      // Render Router Probabilities
+      const probs = data.router_probabilities || {};
+      const probsDiv = document.getElementById('router-probs-list');
+      probsDiv.innerHTML = Object.entries(probs)
+        .sort((a, b) => b[1] - a[1])
+        .map(([strat, p]) => {
+          const pct = (p * 100).toFixed(1);
+          const active = strat === data.strategy_used;
+          return `
+            <div>
+              <div class="flex justify-between mb-0.5">
+                <span class="mono uppercase ${active ? 'text-sky-300 font-bold' : 'text-slate-400'}">${strat} ${active ? '★' : ''}</span>
+                <span class="mono text-slate-300">${pct}%</span>
+              </div>
+              <div class="w-full h-1.5 rounded-full bg-slate-800 overflow-hidden">
+                <div class="h-full ${active ? 'bg-sky-400' : 'bg-slate-600'}" style="width: ${pct}%"></div>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+      // Render Stage Latencies
+      if (data.latency_ms) {
+        document.getElementById('total-latency-badge').textContent = `${data.latency_ms} ms`;
+      }
+      const stages = data.stage_latencies_ms || {};
+      document.getElementById('stage-latency-list').innerHTML = Object.entries(stages)
+        .map(([k, v]) => `
+          <div class="flex justify-between items-center text-xs">
+            <span class="text-slate-400 mono">${k.replace('_ms', '')}</span>
+            <span class="mono text-slate-200">${v} ms</span>
+          </div>
+        `).join('');
+
+      const qa = data.query_analysis || {};
+      document.getElementById('qa-era').textContent = qa.detected_era || 'all';
+      document.getElementById('qa-complexity').textContent = qa.complexity || 'moderate';
+      document.getElementById('qa-symbols').textContent = (qa.code_symbols && qa.code_symbols.length) ? qa.code_symbols.join(', ') : 'none';
+
+      // Render Retrieved Chunks
+      const metas = data.retrieved_metadatas || [];
+      const chunks = data.context_chunks || [];
+      document.getElementById('chunk-count-label').textContent = chunks.length;
+      const listEl = document.getElementById('retrieved-chunks-list');
+      listEl.innerHTML = chunks.map((text, idx) => {
+        const m = metas[idx] || {};
+        const isCurrent = m.source === 'current';
+        const eraBadge = isCurrent
+          ? '<span class="px-2 py-0.5 rounded text-[10px] mono bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">current (Hooks)</span>'
+          : '<span class="px-2 py-0.5 rounded text-[10px] mono bg-amber-500/15 text-amber-300 border border-amber-500/30">legacy (v17)</span>';
+        return `
+          <div class="rounded-xl bg-slate-950/80 border border-slate-800 p-3.5 space-y-2 glass-hover transition">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div class="flex items-center gap-2">
+                <span class="w-5 h-5 rounded-md bg-sky-500/20 text-sky-300 mono text-xs flex items-center justify-center font-bold">#${idx + 1}</span>
+                <span class="font-semibold text-xs text-white">${m.title || 'React Documentation'}</span>
+                ${eraBadge}
+              </div>
+              <span class="mono text-[11px] text-slate-400">${m.chunk_id || ''}</span>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed whitespace-pre-line">${escapeHtml(text)}</p>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function executeQuery() {
+      const btn = document.getElementById('run-query-btn');
+      const question = document.getElementById('query-input').value.trim();
+      if (!question) return;
+
+      const strategy = document.getElementById('query-strategy').value;
+      const era_filter = document.getElementById('query-era').value;
+      const top_k = parseInt(document.getElementById('query-topk').value, 10);
+      const enable_expansion = document.getElementById('query-expand').checked;
+      const useStreaming = document.getElementById('query-stream') ? document.getElementById('query-stream').checked : true;
+
+      btn.disabled = true;
+      btn.innerHTML = '<span>Streaming...</span>';
+      document.getElementById('inline-debate-box').classList.add('hidden');
+
+      try {
+        if (useStreaming) {
+          document.getElementById('ans-text').textContent = '';
+          const cursor = document.createElement('span');
+          cursor.className = 'inline-block w-2 h-4 ml-1 bg-emerald-400 animate-pulse';
+          document.getElementById('ans-text').appendChild(cursor);
+
+          const res = await fetch('/query/stream', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ question, strategy, top_k, era_filter, enable_expansion, use_cache: true })
+          });
+
+          const reader = res.body.getReader();
+          const decoder = new TextDecoder('utf-8');
+          let buffer = '';
+          let streamedAnswer = '';
+          let metaPayload = null;
+
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            buffer += decoder.decode(value, { stream: true });
+
+            const events = buffer.split('\n\n');
+            buffer = events.pop();
+
+            for (const rawEvent of events) {
+              let eventType = 'message';
+              let eventData = '';
+              for (const line of rawEvent.split('\n')) {
+                if (line.startsWith('event:')) eventType = line.slice(6).trim();
+                if (line.startsWith('data:')) eventData += line.slice(5).trim();
+              }
+              if (!eventData) continue;
+              try {
+                const parsed = JSON.parse(eventData);
+                if (eventType === 'meta') {
+                  metaPayload = parsed;
+                  lastPlaygroundResponse = parsed;
+                  renderMetadataAndUncertainty(parsed);
+                } else if (eventType === 'token') {
+                  streamedAnswer += parsed.token;
+                  document.getElementById('ans-text').textContent = streamedAnswer;
+                  const c = document.createElement('span');
+                  c.className = 'inline-block w-2 h-4 ml-1 bg-emerald-400 animate-pulse';
+                  document.getElementById('ans-text').appendChild(c);
+                } else if (eventType === 'done') {
+                  document.getElementById('ans-text').textContent = streamedAnswer || parsed.full_answer || '';
+                  document.getElementById('total-latency-badge').textContent = `${parsed.total_latency_ms} ms (${parsed.tokens_generated} tokens)`;
+                  if (metaPayload) {
+                    lastPlaygroundResponse = { ...metaPayload, answer: streamedAnswer, latency_ms: parsed.total_latency_ms };
+                  }
+                }
+              } catch (e) {
+                console.error('SSE parsing exception', e);
+              }
+            }
+          }
+        } else {
+          const res = await fetch('/query', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ question, strategy, top_k, era_filter, enable_expansion, use_cache: true })
+          });
+          const data = await res.json();
+          lastPlaygroundResponse = data;
+          document.getElementById('ans-text').textContent = data.answer;
+          renderMetadataAndUncertainty(data);
+        }
+
+        await refreshHealth();
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<span>Run Pipeline</span><span>→</span>';
+      }
+    }
+
+    async function verifyFaithfulnessFromPlayground() {
+      if (!lastPlaygroundResponse) return;
+      const box = document.getElementById('inline-debate-box');
+      box.classList.remove('hidden');
+      box.innerHTML = '<div class="text-slate-400">⚖️ Running Dual-LLM Faithfulness Debate (llama3.1:8b vs phi3:mini)...</div>';
+      const res = await fetch('/debate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          question: lastPlaygroundResponse.question,
+          context: (lastPlaygroundResponse.context_chunks || []).join('\n\n'),
+          answer: lastPlaygroundResponse.answer
+        })
+      });
+      const d = await res.json();
+      box.innerHTML = `
+        <div class="flex items-center justify-between">
+          <span class="font-bold ${d.faithful ? 'text-emerald-400' : 'text-rose-400'}">
+            Verdict: ${d.faithful ? '✓ FAITHFUL (Grounded in Context)' : '✗ POTENTIAL HALLUCINATION'}
+          </span>
+          <span class="mono text-[11px] text-slate-400">Inter-Judge Agreement: ${d.agreement ? '100% Consensus' : 'Arbitrated'}</span>
+        </div>
+        <div class="text-slate-300"><strong>Judge A (${d.primary_judge_model}):</strong> ${escapeHtml(d.judge_a)}</div>
+        <div class="text-slate-300"><strong>Judge B (${d.secondary_judge_model}):</strong> ${escapeHtml(d.judge_b)}</div>
+      `;
+    }
+
+    function compareFromPlayground() {
+      const q = document.getElementById('query-input').value.trim();
+      if (q) document.getElementById('compare-input').value = q;
+      switchTab('compare');
+      runComparisonMatrix();
+    }
+
+    async function runComparisonMatrix() {
+      const q = document.getElementById('compare-input').value.trim();
+      if (!q) return;
+      const grid = document.getElementById('compare-matrix-grid');
+      grid.innerHTML = '<div class="col-span-full glass rounded-2xl p-8 text-center text-sky-400 text-sm">Executing all 5 retrieval strategies in parallel...</div>';
+
+      const res = await fetch('/compare', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question: q, top_k: 4, enable_expansion: true })
+      });
+      const data = await res.json();
+      const order = ['simple', 'semantic', 'hybrid', 'rerank', 'router'];
+      grid.innerHTML = order.map(key => {
+        const st = data.strategies[key];
+        const isChosen = data.router_decision.chosen_strategy === key || key === 'router';
+        return `
+          <div class="glass rounded-2xl p-4 flex flex-col justify-between space-y-3 ${isChosen ? 'border-sky-500/60' : ''}">
+            <div class="space-y-2">
+              <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                <div>
+                  <div class="text-xs font-bold text-white uppercase">${key}</div>
+                  <div class="text-[11px] text-slate-400">${st.label}</div>
+                </div>
+                <span class="mono text-[11px] px-2 py-0.5 rounded bg-slate-800 text-sky-300">${st.latency_ms} ms</span>
+              </div>
+              <div class="space-y-2.5 pt-1">
+                ${(st.chunks || []).map(c => `
+                  <div class="rounded-lg bg-slate-950/90 border border-slate-800/90 p-2.5 space-y-1">
+                    <div class="flex items-center justify-between text-[11px]">
+                      <span class="font-bold text-sky-400 mono">#${c.rank} (${c.score})</span>
+                      <span class="px-1.5 py-0.2 rounded text-[10px] mono ${c.source === 'current' ? 'bg-emerald-500/15 text-emerald-300' : 'bg-amber-500/15 text-amber-300'}">${c.source}</span>
+                    </div>
+                    <div class="text-xs font-semibold text-slate-200 truncate" title="${escapeHtml(c.title)}">${escapeHtml(c.title)}</div>
+                    <div class="mono text-[10px] text-slate-500 truncate">${c.chunk_id}</div>
+                    ${c.bm25_rank || c.vector_rank ? `<div class="text-[10px] mono text-indigo-300">BM25 #${c.bm25_rank || '–'} + Vec #${c.vector_rank || '–'}</div>` : ''}
+                    <p class="text-[11px] text-slate-400 line-clamp-3">${escapeHtml(c.snippet)}</p>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function loadBenchmarkData() {
+      const res = await fetch('/benchmark');
+      const data = await res.json();
+      renderBenchmarkView(data.latest_eval, data.latest_drift, data.active_learning_flags);
+    }
+
+    async function triggerLiveEval() {
+      const btn = document.getElementById('btn-trigger-eval');
+      btn.disabled = true;
+      btn.textContent = '⏳ Evaluating 100 Q&A Pairs...';
+      try {
+        await fetch('/eval', { method: 'POST' });
+        await loadBenchmarkData();
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '▶ Run Full Evaluation Harness';
+      }
+    }
+
+    function renderBenchmarkView(evalData, driftData, flags) {
+      if (!evalData || !evalData.summary) return;
+      document.getElementById('bench-timestamp').textContent = `Run: ${evalData.timestamp} (${evalData.num_questions} Q&A pairs)`;
+      const summary = evalData.summary;
+
+      // Cards
+      document.getElementById('benchmark-cards').innerHTML = Object.entries(summary).map(([strat, m]) => `
+        <div class="glass rounded-2xl p-4 space-y-1.5">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold uppercase text-sky-400 mono">${strat}</span>
+            <span class="text-[11px] mono text-slate-400">${m.avg_latency_ms || 0} ms</span>
+          </div>
+          <div class="text-2xl font-bold text-white mono">${(m.avg_recall_at_4 * 100).toFixed(1)}%</div>
+          <div class="text-[11px] text-slate-400">Recall@4 • MRR: ${m.avg_mrr.toFixed(3)}</div>
+        </div>
+      `).join('');
+
+      // Table
+      document.getElementById('benchmark-table-body').innerHTML = Object.entries(summary).map(([strat, m]) => {
+        const f = m.failure_attributions || {};
+        return `
+          <tr class="hover:bg-slate-900/50">
+            <td class="py-2.5 px-3 font-bold uppercase text-white">${strat}</td>
+            <td class="py-2.5 px-3 text-sky-300">${m.avg_recall_at_4.toFixed(4)}</td>
+            <td class="py-2.5 px-3 text-slate-300">${m.avg_mrr.toFixed(4)}</td>
+            <td class="py-2.5 px-3 text-indigo-300">${(m.avg_ndcg_at_4 || 0).toFixed(4)}</td>
+            <td class="py-2.5 px-3 text-emerald-400 font-semibold">${(m.accuracy * 100).toFixed(1)}%</td>
+            <td class="py-2.5 px-3 text-slate-400">${m.avg_latency_ms || '—'} ms</td>
+            <td class="py-2.5 px-3 text-slate-400">${f.RETRIEVAL_MISS || 0} / ${f.RETRIEVAL_RANK || 0} / ${f.CHUNK_BOUNDARY || 0}</td>
+          </tr>
+        `;
+      }).join('');
+
+      // Pareto
+      const p = evalData.pareto_optimal;
+      document.getElementById('pareto-card').innerHTML = p
+        ? `<div class="text-sm font-bold text-emerald-300 mono uppercase">${p.strategy}</div>
+           <div>Recall@4: <span class="mono text-white">${p.recall_at_k}</span> | Latency: <span class="mono text-white">${p.latency_ms} ms</span></div>
+           <div class="text-[11px] text-slate-400">Maximizes Recall@4 under the 300ms production SLA constraint.</div>`
+        : 'Run evaluation to compute Pareto winner.';
+
+      // Drift
+      document.getElementById('drift-card').innerHTML = driftData
+        ? `<div>Centroid Shift: <span class="mono font-bold text-white">${driftData.centroid_shift}</span> (Threshold: ${driftData.threshold})</div>
+           <div>Status: <span class="mono ${driftData.flagged ? 'text-amber-400' : 'text-emerald-400'}">${driftData.flagged ? '⚠ DRIFT FLAGGED' : '✓ STABLE'}</span></div>`
+        : 'No drift logs recorded yet.';
+
+      // Active Learning Flags
+      document.getElementById('flags-card').innerHTML = (flags && flags.length)
+        ? flags.map(fl => `<div class="p-2 rounded bg-slate-950 border border-slate-800"><span class="mono text-rose-300 font-bold">${fl.qid}</span>: Conf=${fl.confidence}, Correct=${fl.correct}</div>`).join('')
+        : '<div class="text-emerald-400">✓ Zero high-confidence ground truth conflicts detected.</div>';
+    }
+
+    async function runAdversarialLab() {
+      const q = document.getElementById('adv-question').value.trim();
+      if (!q) return;
+      const out = document.getElementById('adv-output');
+      out.innerHTML = '<div class="text-slate-400">Generating adversarial variants and counterfactual decoy...</div>';
+      const res = await fetch('/adversarial', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question: q })
+      });
+      const data = await res.json();
+      out.innerHTML = `
+        <div class="space-y-2">
+          ${(data.variants || []).map(v => `
+            <div class="p-2.5 rounded-lg bg-slate-950 border border-slate-800">
+              <span class="mono uppercase text-[10px] px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-300">${v.variant_type}</span>
+              <div class="text-slate-200 mt-1">${escapeHtml(v.question)}</div>
+            </div>
+          `).join('')}
+          <div class="p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 space-y-1">
+            <div class="font-bold text-amber-300 mono text-[11px]">COUNTERFACTUAL DECOY DISTRACTOR</div>
+            <div class="text-slate-200">${escapeHtml(data.counterfactual_decoy)}</div>
+          </div>
+        </div>
+      `;
+    }
+
+    async function runDebateLab() {
+      const question = document.getElementById('debate-q').value.trim();
+      const context = document.getElementById('debate-ctx').value.trim();
+      const answer = document.getElementById('debate-ans').value.trim();
+      const out = document.getElementById('debate-output');
+      out.innerHTML = '<div class="text-slate-400">Running multi-judge faithfulness debate...</div>';
+      const res = await fetch('/debate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question, context, answer })
+      });
+      const d = await res.json();
+      out.innerHTML = `
+        <div class="p-3 rounded-xl bg-slate-950 border border-emerald-500/30 space-y-2">
+          <div class="font-bold ${d.faithful ? 'text-emerald-400' : 'text-rose-400'}">
+            Final Verdict: ${d.faithful ? '✓ FAITHFUL' : '✗ UNFAITHFUL / HALLUCINATED'} (Agreement: ${d.agreement})
+          </div>
+          <div><strong>Judge A (${d.primary_judge_model}):</strong> ${escapeHtml(d.judge_a)}</div>
+          <div><strong>Judge B (${d.secondary_judge_model}):</strong> ${escapeHtml(d.judge_b)}</div>
+        </div>
+      `;
+    }
+
+    async function loadObservabilityData() {
+      try {
+        const [hRes, tRes, mRes] = await Promise.all([
+          fetch('/health'),
+          fetch('/traces?limit=15'),
+          fetch('/metrics')
+        ]);
+        const health = await hRes.json();
+        const tracesData = await tRes.json();
+        const metricsRaw = await mRes.text();
+
+        // Metrics raw
+        document.getElementById('obs-metrics-raw').textContent = metricsRaw;
+
+        // Health / Snapshot stats
+        const obs = health.observability || {};
+        const snap = obs.metrics_snapshot || {};
+        const cache = snap.cache || {};
+        const stages = snap.stages || {};
+
+        document.getElementById('obs-stat-requests').textContent = health.concurrency ? health.concurrency.total_requests : '—';
+        document.getElementById('obs-stat-cache').textContent = `${((cache.hit_ratio || 0) * 100).toFixed(1)}% (${cache.hits || 0} hits)`;
+        document.getElementById('obs-stat-semaphore').textContent = health.concurrency ? `${health.concurrency.active_permits} / ${health.concurrency.max_capacity}` : '—';
+        document.getElementById('obs-stat-entropy').textContent = snap.entropy_fallbacks != null ? snap.entropy_fallbacks : 0;
+
+        // Stage Breakdown list
+        const stageKeys = Object.keys(stages);
+        if (stageKeys.length > 0) {
+          document.getElementById('obs-stages-list').innerHTML = stageKeys.map(k => {
+            const stg = stages[k];
+            return `
+              <div class="flex items-center justify-between p-2 rounded-lg bg-slate-950 border border-slate-800">
+                <span class="mono text-sky-300 font-semibold">${k}</span>
+                <span class="text-slate-400">avg: <strong class="text-white mono">${stg.avg_ms} ms</strong> (${stg.count} calls)</span>
+              </div>
+            `;
+          }).join('');
+        }
+
+        // Populate trace dropdown
+        cachedTraces = tracesData.traces || [];
+        const sel = document.getElementById('obs-trace-select');
+        if (cachedTraces.length === 0) {
+          sel.innerHTML = '<option value="">Zero traces recorded yet</option>';
+          document.getElementById('obs-waterfall-container').innerHTML = '<div class="text-xs text-slate-500 italic text-center py-6">Run a query in Playground to generate distributed traces.</div>';
+        } else {
+          sel.innerHTML = cachedTraces.map((t, i) => `
+            <option value="${t.trace_id}">${i + 1}. [${t.status}] ${t.root_name} — ${t.duration_ms} ms (${t.span_count} spans)</option>
+          `).join('');
+          renderSelectedTrace();
+        }
+      } catch (e) {
+        console.error('Failed to load observability data', e);
+      }
+    }
+
+    function renderSelectedTrace() {
+      const sel = document.getElementById('obs-trace-select');
+      const traceId = sel.value;
+      const traceObj = cachedTraces.find(t => t.trace_id === traceId) || cachedTraces[0];
+      if (!traceObj) return;
+
+      const container = document.getElementById('obs-waterfall-container');
+      const waterfall = traceObj.waterfall || [];
+      const totalMs = traceObj.duration_ms || 1.0;
+
+      container.innerHTML = `
+        <div class="flex items-center justify-between text-xs pb-1 border-b border-slate-800 text-slate-400 mono">
+          <span>Trace ID: <strong class="text-sky-300">${traceObj.trace_id}</strong></span>
+          <span>Duration: <strong class="text-emerald-300">${traceObj.duration_ms} ms</strong> | Status: <strong class="${traceObj.status === 'OK' ? 'text-emerald-400' : 'text-rose-400'}">${traceObj.status}</strong></span>
+        </div>
+        <div class="space-y-2 pt-2">
+          ${waterfall.map(span => {
+            const leftPct = Math.min(95, (span.offset_ms / totalMs * 100)).toFixed(1);
+            const widthPct = Math.max(3, Math.min(100 - leftPct, span.pct_of_total)).toFixed(1);
+            return `
+              <div class="space-y-1">
+                <div class="flex items-center justify-between text-[11px] mono">
+                  <span class="text-slate-300 font-semibold truncate max-w-[260px]">${span.name}</span>
+                  <span class="text-slate-400">+${span.offset_ms}ms (${span.duration_ms}ms, ${span.pct_of_total}%)</span>
+                </div>
+                <div class="w-full h-3 rounded bg-slate-900 border border-slate-800 overflow-hidden relative">
+                  <div class="h-full rounded ${span.status === 'ERROR' ? 'bg-rose-500' : 'bg-gradient-to-r from-sky-500 to-indigo-500'}"
+                       style="margin-left: ${leftPct}%; width: ${widthPct}%;"></div>
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
+    function escapeHtml(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+    }
+
+    // Initialize on load
+    window.addEventListener('DOMContentLoaded', () => {
+      refreshHealth();
+      executeQuery();
+    });
+  </script>
+</body>
+</html>

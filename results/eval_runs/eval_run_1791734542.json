@@ -1,0 +1,225 @@
+{
+  "timestamp": "2026-10-11T21:32:22.863149",
+  "num_questions": 2,
+  "summary": {
+    "simple": {
+      "avg_recall_at_4": 0.0,
+      "avg_mrr": 0.0,
+      "avg_ndcg_at_4": 0.0,
+      "avg_latency_ms": 16.2,
+      "accuracy": 0.0,
+      "failure_attributions": {
+        "RETRIEVAL_MISS": 2,
+        "RETRIEVAL_RANK": 0,
+        "CHUNK_BOUNDARY": 0,
+        "GENERATION_HALLUCINATION": 0,
+        "GROUND_TRUTH_AMBIGUOUS": 0
+      }
+    },
+    "semantic": {
+      "avg_recall_at_4": 0.0,
+      "avg_mrr": 0.0,
+      "avg_ndcg_at_4": 0.0,
+      "avg_latency_ms": 10.21,
+      "accuracy": 0.0,
+      "failure_attributions": {
+        "RETRIEVAL_MISS": 2,
+        "RETRIEVAL_RANK": 0,
+        "CHUNK_BOUNDARY": 0,
+        "GENERATION_HALLUCINATION": 0,
+        "GROUND_TRUTH_AMBIGUOUS": 0
+      }
+    },
+    "hybrid": {
+      "avg_recall_at_4": 0.0,
+      "avg_mrr": 0.0,
+      "avg_ndcg_at_4": 0.0,
+      "avg_latency_ms": 26.45,
+      "accuracy": 0.0,
+      "failure_attributions": {
+        "RETRIEVAL_MISS": 2,
+        "RETRIEVAL_RANK": 0,
+        "CHUNK_BOUNDARY": 0,
+        "GENERATION_HALLUCINATION": 0,
+        "GROUND_TRUTH_AMBIGUOUS": 0
+      }
+    },
+    "rerank": {
+      "avg_recall_at_4": 0.0,
+      "avg_mrr": 0.0,
+      "avg_ndcg_at_4": 0.0,
+      "avg_latency_ms": 27.47,
+      "accuracy": 0.0,
+      "failure_attributions": {
+        "RETRIEVAL_MISS": 2,
+        "RETRIEVAL_RANK": 0,
+        "CHUNK_BOUNDARY": 0,
+        "GENERATION_HALLUCINATION": 0,
+        "GROUND_TRUTH_AMBIGUOUS": 0
+      }
+    },
+    "router": {
+      "avg_recall_at_4": 0.0,
+      "avg_mrr": 0.0,
+      "avg_ndcg_at_4": 0.0,
+      "avg_latency_ms": 28.48,
+      "accuracy": 0.0,
+      "failure_attributions": {
+        "RETRIEVAL_MISS": 2,
+        "RETRIEVAL_RANK": 0,
+        "CHUNK_BOUNDARY": 0,
+        "GENERATION_HALLUCINATION": 0,
+        "GROUND_TRUTH_AMBIGUOUS": 0
+      }
+    }
+  },
+  "pareto_optimal": {
+    "strategy": "simple",
+    "recall_at_k": 0.0,
+    "latency_ms": 16.2
+  },
+  "generation_metrics": {
+    "mean_faithfulness": 1.0,
+    "mean_answer_relevance": 0.4063,
+    "mean_context_recall": 0.0,
+    "samples_evaluated": 2,
+    "diagnoses": {
+      "SUCCESS": 0,
+      "RETRIEVAL_FAILURE": 1,
+      "GENERATION_HALLUCINATION": 0,
+      "COMPOUND_FAILURE": 1
+    }
+  },
+  "per_question_results": {
+    "simple": [
+      {
+        "qid": "qa_test_01",
+        "question": "How do you initialize state in class components?",
+        "recall": 0.0,
+        "mrr": 0.0,
+        "ndcg": 0.0,
+        "correct": false,
+        "spread": 0.1575,
+        "agreement": 0.5,
+        "confidence": "HIGH",
+        "latency_ms": 11.52
+      },
+      {
+        "qid": "qa_test_02",
+        "question": "How does the useRef hook work?",
+        "recall": 0.0,
+        "mrr": 0.0,
+        "ndcg": 0.0,
+        "correct": false,
+        "spread": 0.1661,
+        "agreement": 0.75,
+        "confidence": "HIGH",
+        "latency_ms": 20.88
+      }
+    ],
+    "semantic": [
+      {
+        "qid": "qa_test_01",
+        "question": "How do you initialize state in class components?",
+        "recall": 0.0,
+        "mrr": 0.0,
+        "ndcg": 0.0,
+        "correct": false,
+        "spread": 0.1575,
+        "agreement": 0.5,
+        "confidence": "HIGH",
+        "latency_ms": 10.27
+      },
+      {
+        "qid": "qa_test_02",
+        "question": "How does the useRef hook work?",
+        "recall": 0.0,
+        "mrr": 0.0,
+        "ndcg": 0.0,
+        "correct": false,
+        "spread": 0.1661,
+        "agreement": 0.75,
+        "confidence": "HIGH",
+        "latency_ms": 10.14
+      }
+    ],
+    "hybrid": [
+      {
+        "qid": "qa_test_01",
+        "question": "How do you initialize state in class components?",
+        "recall": 0.0,
+        "mrr": 0.0,
+        "ndcg": 0.0,
+        "correct": false,
+        "spread": 0.1575,
+        "agreement": 0.5,
+        "confidence": "HIGH",
+        "latency_ms": 21.84
+      },
+      {
+        "qid": "qa_test_02",
+        "question": "How does the useRef hook work?",
+        "recall": 0.0,
+        "mrr": 0.0,
+        "ndcg": 0.0,
+        "correct": false,
+        "spread": 0.1661,
+        "agreement": 0.75,
+        "confidence": "HIGH",
+        "latency_ms": 31.05
+      }
+    ],
+    "rerank": [
+      {
+        "qid": "qa_test_01",
+        "question": "How do you initialize state in class components?",
+        "recall": 0.0,
+        "mrr": 0.0,
+        "ndcg": 0.0,
+        "correct": false,
+        "spread": 0.1575,
+        "agreement": 0.5,
+        "confidence": "HIGH",
+        "latency_ms": 22.97
+      },
+      {
+        "qid": "qa_test_02",
+        "question": "How does the useRef hook work?",
+        "recall": 0.0,
+        "mrr": 0.0,
+        "ndcg": 0.0,
+        "correct": false,
+        "spread": 0.1661,
+        "agreement": 0.75,
+        "confidence": "HIGH",
+        "latency_ms": 31.97
+      }
+    ],
+    "router": [
+      {
+        "qid": "qa_test_01",
+        "question": "How do you initialize state in class components?",
+        "recall": 0.0,
+        "mrr": 0.0,
+        "ndcg": 0.0,
+        "correct": false,
+        "spread": 0.1575,
+        "agreement": 0.5,
+        "confidence": "HIGH",
+        "latency_ms": 17.6
+      },
+      {
+        "qid": "qa_test_02",
+        "question": "How does the useRef hook work?",
+        "recall": 0.0,
+        "mrr": 0.0,
+        "ndcg": 0.0,
+        "correct": false,
+        "spread": 0.1661,
+        "agreement": 0.75,
+        "confidence": "HIGH",
+        "latency_ms": 39.35
+      }
+    ]
+  }
+}

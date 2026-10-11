@@ -1,13 +1,20 @@
 """
 Chunking strategies for the RAG evaluation harness.
 
-simple_chunk():   fixed-size sliding window over words, with overlap.
-semantic_chunk(): splits at sentence-level topic-shift boundaries, detected
-                  via embedding similarity between consecutive sentences.
+simple_chunk():                fixed-size sliding window over words, with overlap.
+semantic_chunk():              splits at sentence-level topic-shift boundaries.
+hierarchical_markdown_chunk(): AST & code-block aware Parent-Document chunker (Solution 1).
 """
 
 import re
 import numpy as np
+from src.ingestion.ast_chunker import (
+    HierarchicalChunk,
+    hierarchical_markdown_chunk,
+    hierarchical_chunk_corpus,
+    split_markdown_sections,
+)
+
 
 
 def simple_chunk(text: str, chunk_size: int = 500, overlap: int = 50) -> list[str]:

@@ -10,9 +10,24 @@ from typing import List, Tuple
 _TOKEN_PATTERN = re.compile(r"[a-zA-Z0-9_]+")
 
 
+_CAMEL_SPLIT = re.compile(r"(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])")
+
+
 def tokenize(text: str) -> List[str]:
-    """Lowercase word/identifier tokenizer preserving underscores."""
-    return _TOKEN_PATTERN.findall(text.lower())
+    """Lowercase word/identifier tokenizer preserving underscores and expanding camelCase symbols."""
+    raw_tokens = _TOKEN_PATTERN.findall(text)
+    tokens: List[str] = []
+    for tok in raw_tokens:
+        low = tok.lower()
+        tokens.append(low)
+        # Expand camelCase (e.g. useEffect -> use, effect; componentDidMount -> component, did, mount)
+        parts = _CAMEL_SPLIT.split(tok)
+        if len(parts) > 1:
+            for p in parts:
+                pl = p.lower()
+                if len(pl) > 2 and pl != "use":
+                    tokens.append(pl)
+    return tokens
 
 
 class NativeBM25Okapi:
@@ -61,12 +76,14 @@ class BM25Store:
     def __init__(self):
         self.bm25 = None
         self.chunk_ids: List[str] = []
+        self.metadatas: List[dict] = []
         self.tokenized_corpus: List[List[str]] = []
 
-    def build(self, chunk_ids: List[str], texts: List[str]) -> None:
+    def build(self, chunk_ids: List[str], texts: List[str], metadatas: List[dict] | None = None) -> None:
         if len(chunk_ids) != len(texts):
             raise ValueError("chunk_ids and texts must be the same length")
         self.chunk_ids = chunk_ids
+        self.metadatas = metadatas if metadatas is not None else [{} for _ in chunk_ids]
         self.tokenized_corpus = [tokenize(t) for t in texts]
         if self.tokenized_corpus:
             try:
@@ -75,11 +92,18 @@ class BM25Store:
             except Exception:
                 self.bm25 = NativeBM25Okapi(self.tokenized_corpus)
 
-    def query(self, query_text: str, top_k: int = 4) -> List[Tuple[str, float]]:
+    def query(self, query_text: str, top_k: int = 4, where: dict | None = None) -> List[Tuple[str, float]]:
         """Returns [(chunk_id, bm25_score), ...] sorted descending by score."""
         if self.bm25 is None or not self.chunk_ids:
             return []
         tokenized_query = tokenize(query_text)
         scores = self.bm25.get_scores(tokenized_query)
-        ranked = sorted(zip(self.chunk_ids, scores), key=lambda x: x[1], reverse=True)
+        pairs = []
+        for idx, (cid, sc) in enumerate(zip(self.chunk_ids, scores)):
+            if where and idx < len(self.metadatas):
+                meta = self.metadatas[idx] or {}
+                if not all(meta.get(k) == v for k, v in where.items()):
+                    continue
+            pairs.append((cid, float(sc)))
+        ranked = sorted(pairs, key=lambda x: x[1], reverse=True)
         return ranked[:top_k]

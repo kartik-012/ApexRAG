@@ -4,6 +4,7 @@ from .bm25_store import BM25Store
 from .hybrid import reciprocal_rank_fusion, FusedResult
 from .reranker import Reranker, RerankedResult, rerank, get_reranker, real_cross_encoder_score_fn
 from .router import StrategyRouter
+from .crag import CRAGResult, RetrievalGrade, execute_crag_pipeline, compute_chunk_relevance
 
 __all__ = [
     "VectorStore",
@@ -17,5 +18,10 @@ __all__ = [
     "get_reranker",
     "real_cross_encoder_score_fn",
     "StrategyRouter",
+    "CRAGResult",
+    "RetrievalGrade",
+    "execute_crag_pipeline",
+    "compute_chunk_relevance",
 ]
+
 

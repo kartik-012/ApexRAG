@@ -131,39 +131,78 @@ DRAFT_QA = [
     ("What happens if you mutate `this.state` directly instead of using `setState`?", "React will not know the state has changed and will not re-render the component.", "will not re-render")
 ]
 
+def _score_chunk_for_qa(record: dict, question: str, answer: str, kw: str) -> float:
+    import re
+    text_low = record["text"].lower()
+    title_low = record["doc_title"].lower()
+    cid_low = record["chunk_id"].lower()
+    kw_low = kw.lower()
+
+    score = 0.0
+    # 1. Exact keyword phrase match
+    if kw_low in text_low:
+        score += 4.0 + min(3.0, text_low.count(kw_low) * 0.5)
+
+    # 2. Extract backticked or camelCase code symbols from question
+    symbols = [
+        s.lower()
+        for tup in re.findall(r"`([^`]+)`|\b(use[A-Z]\w+|component[A-Z]\w+|setState|PureComponent|StrictMode|forwardRef|Error Boundary|Portal|Profiler|Suspense|Virtual DOM)\b", question)
+        for s in tup if s
+    ]
+    for sym in symbols:
+        sym_clean = sym.strip("<>").lower()
+        if sym_clean in title_low or sym_clean in cid_low:
+            score += 6.0
+        if sym_clean in text_low:
+            score += 2.5
+
+    # 3. Era alignment: class lifecycle questions prefer legacy or class docs
+    q_low = question.lower()
+    if any(t in q_low for t in ["componentdidmount", "componentwillunmount", "shouldcomponentupdate", "purecomponent", "this.setstate", "this.state", "class component"]):
+        if record["source"] == "legacy" or "component" in title_low:
+            score += 2.0
+
+    # 4. Question + Answer meaningful word overlap
+    stopwords = {"what", "how", "does", "do", "is", "are", "the", "a", "an", "in", "to", "of", "for", "with", "when", "why", "can", "you", "react"}
+    qa_words = set(re.findall(r"[a-zA-Z0-9_]{3,}", (question + " " + answer).lower())) - stopwords
+    chunk_words = set(re.findall(r"[a-zA-Z0-9_]{3,}", text_low)) - stopwords
+    if qa_words:
+        score += 3.0 * (len(qa_words & chunk_words) / float(len(qa_words)))
+
+    return score
+
+
 def run():
     print("Loading actual chunk index to ensure valid grounded chunk IDs...")
     records, counts = build_chunk_index()
     print(f"Loaded {len(records)} real chunks.")
-    
+
     pairs = []
     for i, (q, a, kw) in enumerate(DRAFT_QA):
-        # Search the real index for the best chunk
-        matches = search_chunks(records, kw)
-        
-        if not matches:
-            # Fallback to a broader search if strict keyword fails
-            words = kw.split()
-            matches = search_chunks(records, words[0])
-            
-        if not matches:
-            # Absolute fallback to first chunk so it doesn't crash (rare)
-            chunk_id = records[0]["chunk_id"]
-        else:
-            chunk_id = matches[0]["chunk_id"]
-            
+        scored = sorted(
+            records,
+            key=lambda r: _score_chunk_for_qa(r, q, a, kw),
+            reverse=True,
+        )
+        best = scored[0]
+        best_doc_id = best["chunk_id"].rsplit("_chunk", 1)[0]
+        gold_ids = [best["chunk_id"]]
+
         pairs.append({
             "id": f"q{i + 1:03d}",
             "question": q,
             "answer": a,
-            "gold_chunk_ids": [chunk_id]
+            "gold_chunk_ids": gold_ids,
+            "gold_doc_id": best_doc_id,
         })
-        
+
     print(f"Generated {len(pairs)} questions grounded to real chunks.")
-    
+
     QA_FILE.parent.mkdir(parents=True, exist_ok=True)
     QA_FILE.write_text(json.dumps(pairs, indent=2), encoding="utf-8")
     print(f"Saved to {QA_FILE}")
 
+
 if __name__ == "__main__":
     run()
+

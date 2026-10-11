@@ -1,0 +1,82 @@
+{
+  "all_passed": true,
+  "metrics": {
+    "faithfulness": 0.3333,
+    "context_recall": 0.6667,
+    "answer_relevance": 0.9262
+  },
+  "thresholds": {
+    "min_faithfulness": 0.2,
+    "min_context_recall": 0.2,
+    "min_answer_relevance": 0.2
+  },
+  "eval_summary": {
+    "samples_count": 3,
+    "mean_faithfulness": 0.3333,
+    "mean_answer_relevance": 0.9262,
+    "mean_context_recall": 0.6667,
+    "diagnoses_breakdown": {
+      "SUCCESS": 0,
+      "RETRIEVAL_FAILURE": 0,
+      "GENERATION_HALLUCINATION": 2,
+      "COMPOUND_FAILURE": 1
+    },
+    "success_rate": 0.0,
+    "samples": [
+      {
+        "question": "What does calling `useState` do inside a component?",
+        "answer": "Instead, we call the `useState` Hook directly inside our component: ``` js{4,5} import React, { useState } from 'react'; function Example() { // Declare a new state variable, which we'll call \"count\" const [count, setCount] = useState(0); ``` **What does calling `useState` do?** It declares a \"state variable\". * **Line 4:** Inside the `Example` component, we declare a new state variable by calling the `useState` Hook. >Note > >You might be curious how React knows which component `useState` corresponds to since we're not passing anything like `this` back to React.",
+        "faithfulness": 0.3333,
+        "answer_relevance": 1.0,
+        "context_recall": 1.0,
+        "claims_count": 3,
+        "claims_supported": 1,
+        "diagnosis": "GENERATION_HALLUCINATION",
+        "details": {
+          "claims_total": 3,
+          "claims_supported": 1,
+          "unsupported_claims": [
+            "* **Line 4:** Inside the `Example` component, we declare a new state variable by calling the `useState` Hook.",
+            ">Note > >You might be curious how React knows which component `useState` corresponds to since we're not passing anything like `this` back to React."
+          ]
+        }
+      },
+      {
+        "question": "How does `useState` handle state updates with identical values?",
+        "answer": "(If we wanted to store two different values in state, we would call `useState()` twice.) **What does `useState` return?** It returns a pair of values: the current state and a function that updates it. {#is-there-something-like-forceupdate} Both `useState` and `useReducer` Hooks [bail out of updates](/docs/hooks-reference.html#bailing-out-of-a-state-update) if the next value is the same as the previous one. That makes it easy to see which props or state your effect uses, and to ensure they're all declared: ``` js{5-10,13} function ProductPage({ productId }) { const [product, setProduct] = useState(null); useEffect(() => { // By moving this function inside the effect, we can clearly see the values it uses.",
+        "faithfulness": 0.3333,
+        "answer_relevance": 0.7787,
+        "context_recall": 1.0,
+        "claims_count": 3,
+        "claims_supported": 1,
+        "diagnosis": "GENERATION_HALLUCINATION",
+        "details": {
+          "claims_total": 3,
+          "claims_supported": 1,
+          "unsupported_claims": [
+            "(If we wanted to store two different values in state, we would call `useState()` twice.) **What does `useState` return?** It returns a pair of values: the current state and a function that updates it.",
+            "{#is-there-something-like-forceupdate} Both `useState` and `useReducer` Hooks [bail out of updates](/docs/hooks-reference.html#bailing-out-of-a-state-update) if the next value is the same as the previous one."
+          ]
+        }
+      },
+      {
+        "question": "Can you update state based on the previous state?",
+        "answer": "It lets you update state based on the previous state: ``` js {2-6} handleIncreaseAge = () => { this.setState(prevState => { return { age: prevState.age + 1 }; }); } ``` You don't have to do this, but it's handy if you want to update state multiple times during the same event. Updating state based on previous state from an Effect When you want to update state based on previous state from an Effect, you might run into a problem: ``` js {6,9} function Counter() { const [count, setCount] = useState(0); useEffect(() => { const intervalId = setInterval(() => { setCount(count + 1); // You want to increment the counter every second... If you need to set the state based on the previous state, you can pass a function to `nextState` as described above.",
+        "faithfulness": 0.3333,
+        "answer_relevance": 1.0,
+        "context_recall": 0.0,
+        "claims_count": 3,
+        "claims_supported": 1,
+        "diagnosis": "COMPOUND_FAILURE",
+        "details": {
+          "claims_total": 3,
+          "claims_supported": 1,
+          "unsupported_claims": [
+            "It lets you update state based on the previous state: ``` js {2-6} handleIncreaseAge = () => { this.setState(prevState => { return { age: prevState.age + 1 }; }); } ``` You don't have to do this, but it's handy if you want to update state multiple times during the same event.",
+            "If you need to set the state based on the previous state, you can pass a function to `nextState` as described above."
+          ]
+        }
+      }
+    ]
+  }
+}

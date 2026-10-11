@@ -1,5 +1,101 @@
-question,query_length,has_named_entity,has_number,best_strategy
-What is componentDidMount lifecycle?,4,1,0,hybrid
-How to manage state in React function component using hooks?,10,1,0,semantic
-Detailed explanation of passing data deeply across multiple component trees using Context API provider,15,1,0,rerank
-useRef vs useState,3,1,0,simple
+question,query_length,has_named_entity,has_code_symbol,has_comparison,has_number,best_strategy
+What does calling `useState` do inside a component?,8,1,1,0,0,hybrid
+How does `useState` handle state updates with identical values?,9,1,1,0,0,hybrid
+Can you update state based on the previous state?,9,1,0,0,0,semantic
+Does `useState` merge objects like `this.setState` did?,7,1,1,0,0,hybrid
+What is lazy initialization in `useState`?,6,1,1,0,0,hybrid
+What happens if you call a state setter during render?,10,1,0,0,0,semantic
+Can multiple state updates be batched?,6,1,0,0,0,semantic
+How do you store a function in `useState`?,8,1,1,0,0,hybrid
+What is the initial state value during a server-side render?,10,1,0,0,0,semantic
+Is state shared between multiple instances of the same component?,10,1,0,0,0,semantic
+What does `useEffect` let you synchronize a component with?,9,1,1,0,0,hybrid
+When does the cleanup function in `useEffect` run?,8,1,1,0,0,hybrid
+What does an empty dependency array `[]` mean in `useEffect`?,10,1,1,0,0,hybrid
+Why should you avoid omitting dependencies in `useEffect`?,8,1,1,0,0,hybrid
+How can you fetch data inside `useEffect` safely?,8,1,1,0,0,hybrid
+What is the difference between `useEffect` and `useLayoutEffect`?,8,1,1,1,0,rerank
+Why might `useEffect` fire twice in development mode?,8,1,1,0,0,hybrid
+Can `useEffect` be used for data transformations before rendering?,9,1,1,0,0,hybrid
+Should you place functions inside or outside of `useEffect`?,9,1,1,0,0,hybrid
+What happens if `useEffect` returns a Promise?,7,1,1,0,0,hybrid
+What determines the value returned by `useContext`?,7,1,1,0,0,hybrid
+What happens if there is no Context.Provider above the component?,10,1,0,0,0,semantic
+Does a component re-render when its context value changes?,9,1,0,0,0,semantic
+Can you use `useContext` outside of a component?,8,1,1,0,0,hybrid
+How do you optimize context consumers to avoid unnecessary renders?,10,1,0,0,0,semantic
+What is Context primarily used for?,6,1,0,0,0,semantic
+Can a single component provide multiple contexts?,7,1,0,0,0,semantic
+What is the performance implication of using an object as a Provider value?,13,1,0,0,0,rerank
+How do you provide context to a portal?,8,1,0,0,0,semantic
+Does context replace Redux or state management?,7,1,0,0,0,semantic
+What kind of value should you store in a `useRef`?,10,1,1,0,0,hybrid
+How do you access the current value of a ref?,10,1,0,0,0,semantic
+When is a ref's `.current` property updated?,7,1,1,0,0,hybrid
+What is a common DOM-related use case for `useRef`?,9,1,1,0,0,hybrid
+Can you pass a ref to a child component?,9,1,0,0,0,semantic
+Is it safe to read or write a ref during render?,11,1,0,0,0,semantic
+Does `useRef` notify you when its content changes?,8,1,1,0,0,hybrid
+How can a child component restrict what's exposed via its ref?,11,1,0,0,0,semantic
+How do you initialize a ref lazily?,7,1,0,0,0,semantic
+How does `useRef` differ from an outside-component variable?,8,1,1,0,0,hybrid
+Under what condition does `useMemo` reuse a previous value?,9,1,1,0,0,hybrid
+What is the purpose of `useCallback`?,6,1,1,0,0,hybrid
+Does `useMemo` guarantee that the function won't run again?,9,1,1,0,0,hybrid
+When should you use `useMemo`?,5,1,1,0,0,simple
+"Is `useCallback(fn, deps)` equivalent to `useMemo`?",6,1,1,0,0,hybrid
+What happens if you leave the dependency array out of `useMemo`?,11,1,1,0,0,semantic
+Why shouldn't you memoize everything?,5,1,0,0,0,semantic
+How does `React.memo` differ from `useMemo`?,6,1,1,0,0,hybrid
+Can `useMemo` cause infinite loops?,5,1,1,0,0,simple
+What is referential equality in the context of `useCallback`?,9,1,1,0,0,hybrid
+What are the three arguments `useReducer` accepts?,7,1,1,0,0,hybrid
+When is `useReducer` preferred over `useState`?,6,1,1,0,0,hybrid
+What is a reducer function?,5,1,0,0,0,semantic
+Can a reducer trigger side effects?,6,1,0,0,0,semantic
+How do you trigger a state change with `useReducer`?,9,1,1,0,0,hybrid
+What does the optional `init` function do in `useReducer`?,9,1,1,0,0,hybrid
+Is the `dispatch` function referentially stable?,6,1,1,0,0,hybrid
+Can you pass `dispatch` down via Context?,7,1,1,0,0,hybrid
+What should a reducer return if it doesn't recognize an action?,11,1,0,0,0,semantic
+How do you handle async logic with `useReducer`?,8,1,1,0,0,hybrid
+What is the Virtual DOM?,5,1,0,0,0,semantic
+What is a pure component?,5,1,0,0,0,semantic
+What is the purpose of the `key` prop?,8,1,1,0,0,hybrid
+What happens if you use the array index as a `key`?,11,1,1,0,0,semantic
+What is prop drilling?,4,1,0,0,0,semantic
+What is a Higher-Order Component (HOC)?,6,1,0,0,0,semantic
+What does lifting state up mean?,6,1,0,0,0,semantic
+What is JSX?,3,1,0,0,0,semantic
+How does React handle event delegation?,6,1,0,0,0,semantic
+What is batching in React?,5,1,0,0,0,semantic
+What is an Error Boundary?,5,1,0,0,0,semantic
+Which lifecycle methods are used to create an Error Boundary?,10,1,0,0,0,semantic
+Do Error Boundaries catch errors in event handlers?,8,1,0,0,0,semantic
+What is `<StrictMode>` used for?,5,1,1,0,0,simple
+Does `<StrictMode>` affect the production build?,6,1,1,0,0,hybrid
+Why does StrictMode render components twice?,6,1,1,0,0,hybrid
+What is a Portal in React?,6,1,0,0,0,semantic
+What is the `<Profiler>` component used for?,7,1,1,0,0,hybrid
+What is Suspense used for?,5,1,0,0,0,semantic
+How do you render a list of fragments without wrapper elements?,11,1,0,0,0,semantic
+What is a Custom Hook?,5,1,0,0,0,semantic
+What is the primary rule of Hooks?,7,1,0,0,0,semantic
+Why must Hooks be called at the top level?,9,1,0,0,0,semantic
+Can a custom hook return JSX?,6,1,0,0,0,semantic
+Do custom hooks share state if used in multiple components?,10,1,0,0,0,semantic
+How should you name a custom hook?,7,1,0,0,0,semantic
+Can you call a hook conditionally?,6,1,0,0,0,semantic
+What is the ESLint plugin `eslint-plugin-react-hooks` for?,7,1,1,0,0,hybrid
+Is a custom hook just a regular function?,8,1,0,0,0,semantic
+Can custom hooks be tested independently?,6,1,0,0,0,semantic
+What does `componentDidMount` do?,4,1,1,0,0,simple
+What is the class equivalent of `useEffect` cleanup?,8,1,1,0,0,hybrid
+How do you bind event handlers in a class component?,10,1,0,0,0,semantic
+What is `getDerivedStateFromProps`?,3,1,1,0,0,simple
+What does `shouldComponentUpdate` return by default?,6,1,1,0,0,hybrid
+What is `React.PureComponent`?,3,1,1,0,0,simple
+Can you use Hooks in a class component?,8,1,0,0,0,semantic
+What is `this.setState`'s optional second argument?,6,1,1,0,0,hybrid
+How do you access Context in a class component without Consumer?,11,1,0,0,0,semantic
+What happens if you mutate `this.state` directly instead of using `setState`?,11,1,1,1,0,rerank

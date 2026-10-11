@@ -67,17 +67,23 @@ def real_cross_encoder_score_fn(pairs: list[tuple[str, str]]) -> list[float]:
 
 
 class Reranker:
-    """Pipeline-integrated re-ranker with CrossEncoder + Jaccard word-overlap fallback."""
+    """Pipeline-integrated re-ranker with CrossEncoder singleton caching + code-aware fallback."""
 
     def __init__(self, model_name: str = RERANKER_MODEL_NAME):
         self.model_name = model_name
         self.model = None
-        try:
-            from sentence_transformers import CrossEncoder
-            self.model = CrossEncoder(model_name)
-        except Exception as e:
-            print(f"[Warning] CrossEncoder model failed to load ({e}). Using cosine re-ranker fallback.")
-            self.model = None
+        global _model
+        if _model is not None and _model != "FAILED":
+            self.model = _model
+        elif _model != "FAILED":
+            try:
+                from sentence_transformers import CrossEncoder
+                _model = CrossEncoder(model_name)
+                self.model = _model
+            except Exception as e:
+                print(f"[Warning] CrossEncoder model failed to load ({e}). Using code-aware lexical re-ranker fallback.")
+                _model = "FAILED"
+                self.model = None
 
     def rerank(self, query: str, candidate_chunks: List[Tuple[str, str]], top_k: int = 4) -> List[Tuple[str, str, float]]:
         """
@@ -100,12 +106,29 @@ class Reranker:
             except Exception as e:
                 print(f"[Warning] CrossEncoder prediction error ({e}). Falling back to word overlap scoring.")
 
-        # Fallback scoring using query word overlap / Jaccard similarity
-        q_words = set(query.lower().split())
+        # Enhanced fallback scoring: stopword-filtered Jaccard + exact code symbol + bigram boost
+        import re
+        stopwords = {"what", "how", "does", "do", "is", "the", "a", "an", "in", "to", "of", "for", "with", "when", "why", "can", "you"}
+        q_tokens = [w for w in re.findall(r"[a-zA-Z0-9_]+", query.lower()) if w not in stopwords]
+        q_words = set(q_tokens) or set(query.lower().split())
+        q_bigrams = {f"{q_tokens[i]} {q_tokens[i+1]}" for i in range(len(q_tokens) - 1)}
+        code_symbols = set(re.findall(r"`([^`]+)`|\b(use[A-Z]\w+|component[A-Z]\w+|setState|PureComponent|StrictMode|forwardRef)\b", query))
+        flat_symbols = {s.lower() for tup in code_symbols for s in tup if s}
+
         ranked = []
-        for cid, text in candidate_chunks:
-            t_words = set(text.lower().split())
+        for rank_idx, (cid, text) in enumerate(candidate_chunks):
+            text_low = text.lower()
+            t_tokens = [w for w in re.findall(r"[a-zA-Z0-9_]+", text_low) if w not in stopwords]
+            t_words = set(t_tokens) or set(text_low.split())
             overlap = len(q_words & t_words) / float(len(q_words | t_words) + 1e-9)
-            ranked.append((cid, text, float(overlap)))
+            # Boost exact symbol matches in chunk text or chunk_id
+            symbol_boost = sum(0.25 for sym in flat_symbols if sym in text_low or sym in cid.lower())
+            # Boost bigram matches
+            bigram_boost = sum(0.10 for bg in q_bigrams if bg in text_low)
+            # Slight prior for initial hybrid rank position
+            prior = 0.05 / (rank_idx + 1)
+            score = float(overlap + symbol_boost + bigram_boost + prior)
+            ranked.append((cid, text, score))
         ranked.sort(key=lambda x: x[2], reverse=True)
         return ranked[:top_k]
+

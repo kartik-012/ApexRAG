@@ -26,12 +26,9 @@ dependencies = [
 ]
 
 [project.urls]
-Repository = "https://github.com/your-username/apexrag"
+Repository = "https://github.com/kartik-012/ApexRAG"
 
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["src*"]
 
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-addopts = "-v --tb=short"

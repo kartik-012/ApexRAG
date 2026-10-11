@@ -21,18 +21,31 @@ def generate_eval_markdown_report(eval_data: Dict[str, Any]) -> str:
         "",
         "## Retrieval Strategy Performance Comparison",
         "",
-        "| Strategy | Recall@4 | MRR | Accuracy | Primary Failure Mode |",
-        "|---|---|---|---|---|",
+        "| Strategy | Recall@4 | MRR | nDCG@4 | Accuracy | Avg Latency (ms) | Primary Failure Mode |",
+        "|---|---|---|---|---|---|---|",
     ]
 
     for strat, metrics in summary.items():
         recall = metrics.get("avg_recall_at_4", 0.0)
         mrr = metrics.get("avg_mrr", 0.0)
+        ndcg = metrics.get("avg_ndcg_at_4", 0.0)
         acc = metrics.get("accuracy", 0.0)
+        lat = metrics.get("avg_latency_ms", 0.0)
         failures = metrics.get("failure_attributions", {})
-        top_failure = max(failures.items(), key=lambda x: x[1])[0] if failures else "NONE"
+        nonzero_failures = {k: v for k, v in failures.items() if v > 0}
+        top_failure = max(nonzero_failures.items(), key=lambda x: x[1])[0] if nonzero_failures else "NONE"
 
-        report_lines.append(f"| **{strat.upper()}** | {recall:.4f} | {mrr:.4f} | {acc * 100:.1f}% | `{top_failure}` |")
+        report_lines.append(
+            f"| **{strat.upper()}** | {recall:.4f} | {mrr:.4f} | {ndcg:.4f} | {acc * 100:.1f}% | {lat:.1f} ms | `{top_failure}` |"
+        )
+
+    pareto = eval_data.get("pareto_optimal")
+    if pareto:
+        report_lines.extend([
+            "",
+            f"**Pareto-Optimal SLA Config (≤300ms)**: `{pareto.get('strategy', 'hybrid').upper()}` "
+            f"(Recall@4: `{pareto.get('recall_at_k', 0.0):.4f}`, Latency: `{pareto.get('latency_ms', 0.0):.1f} ms`)",
+        ])
 
     report_lines.extend([
         "",
@@ -57,3 +70,4 @@ def generate_eval_markdown_report(eval_data: Dict[str, Any]) -> str:
     ])
 
     return "\n".join(report_lines)
+
