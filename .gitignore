@@ -45,6 +45,8 @@ reports/test_ci_gate_*.md
 htmlcov/
 
 # ------ Raw doc clones (large, not committed) ------
+data/raw_docs/react-legacy/
+data/raw_docs/react-dev-current/
 data/raw_docs/legacy/
 data/raw_docs/current/
 

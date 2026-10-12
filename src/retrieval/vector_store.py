@@ -164,6 +164,8 @@ class VectorStore:
         return self.collection.count()
 
     def get_all_embeddings_for_ids(self, chunk_ids: list[str]) -> list[np.ndarray]:
+        if not chunk_ids:
+            return []
         if self.backend == "pgvector" and self.pg_store:
             return self.pg_store.get_all_embeddings_for_ids(chunk_ids)
         if self.backend == "in_memory":

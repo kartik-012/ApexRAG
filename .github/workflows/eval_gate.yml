@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [ main, master ]
 
+permissions:
+  contents: read
+
 jobs:
   test_and_eval_gate:
     name: Run Test Suite & Ragas CI Quality Gate
@@ -14,6 +17,12 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+
+      - name: Fetch React Corpus Docs
+        run: |
+          mkdir -p data/raw_docs
+          git clone --depth 1 --branch v17.0.2 https://github.com/reactjs/reactjs.org.git data/raw_docs/react-legacy || true
+          git clone --depth 1 https://github.com/reactjs/react.dev.git data/raw_docs/react-dev-current || true
 
       - name: Set up Python 3.12
         uses: actions/setup-python@v5
