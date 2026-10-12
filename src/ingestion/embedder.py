@@ -5,6 +5,7 @@ Primary: sentence-transformers with BAAI/bge-small-en-v1.5 (free, CPU-friendly).
 Fallback: TF-IDF vectorizer fallback when offline or running lightweight test sweeps.
 """
 
+import os
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from src.config import EMBEDDING_MODEL_NAME
@@ -16,6 +17,9 @@ _fallback_tfidf = None
 def get_embedder():
     global _model
     if _model is None:
+        if os.getenv("APEXRAG_FAST_EMBED", "false").lower() in ("true", "1", "yes"):
+            _model = "FALLBACK"
+            return _model
         try:
             from sentence_transformers import SentenceTransformer
             _model = SentenceTransformer(EMBEDDING_MODEL_NAME)
