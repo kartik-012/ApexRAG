@@ -22,7 +22,19 @@ def reciprocal_rank_fusion(
     top_k: int = DEFAULT_TOP_K,
 ) -> list[FusedResult]:
     """
-    Combines two rank-ordered lists using Reciprocal Rank Fusion.
+    Combines two rank-ordered candidate lists using Reciprocal Rank Fusion (RRF).
+
+    RRF is scale-invariant and does not require calibrating or normalizing the raw scores
+    of disparate retrieval algorithms (e.g., BM25 logits vs. cosine similarities).
+
+    Args:
+        bm25_ranked_ids: List of chunk IDs ordered by lexical BM25 relevance.
+        vector_ranked_ids: List of chunk IDs ordered by dense embedding cosine similarity.
+        k: Smoothing constant (default: 60) mitigating rank sensitivity for top outliers.
+        top_k: Maximum number of fused items to return.
+
+    Returns:
+        List of FusedResult instances ordered by descending fused RRF score.
     """
     scores: dict[str, float] = {}
     bm25_rank_of: dict[str, int] = {}
