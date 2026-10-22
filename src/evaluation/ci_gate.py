@@ -43,7 +43,20 @@ def run_ci_eval_gate(
     output_report_path: Optional[str] = None,
 ) -> bool:
     """
-    Runs the automated evaluation quality gate and returns True if passed, False if failed.
+    Executes automated Ragas-style evaluation quality gate against verified QA pairs.
+
+    Evaluates Faithfulness, Context Recall, and Answer Relevance against strict SLA targets.
+    Generates a Markdown executive report when output_report_path is specified.
+
+    Args:
+        sample_size: Number of ground-truth QA pairs to evaluate.
+        min_faithfulness: Minimum tolerable faithfulness threshold.
+        min_recall: Minimum tolerable context recall threshold.
+        min_relevance: Minimum tolerable answer relevance threshold.
+        output_report_path: Optional file path to write Markdown summary report.
+
+    Returns:
+        True if all metrics satisfy SLA thresholds, False otherwise.
     """
     qa_path = GROUND_TRUTH_DIR / "qa_pairs.json"
     if not qa_path.exists():
