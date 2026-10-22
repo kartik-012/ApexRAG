@@ -58,9 +58,15 @@ def generate_hyde_passage(question: str) -> str:
     """
     HyDE (Hypothetical Document Embeddings) Generator.
 
-    Generates a synthetic authoritative technical documentation passage that directly
-    answers the question. Embedding this hypothetical document aligns vector space
-    closer to target documentation passages rather than user question syntax.
+    Synthesizes an authoritative technical documentation snippet answering the prompt.
+    Embedding this hypothetical answer projects into the documentation manifold rather
+    than the colloquial user question space, bridging the semantic search gap.
+
+    Args:
+        question: User search query or question text.
+
+    Returns:
+        A synthetic doc passage tailored to React hooks or class lifecycle semantics.
     """
     q_lower = question.lower()
     hooks = _HOOK_PATTERN.findall(question)
