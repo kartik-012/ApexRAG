@@ -47,7 +47,18 @@ MODEL_PRICING_PER_1M: Dict[str, Dict[str, float]] = {
 
 
 def estimate_tokens(text: str) -> int:
-    """Heuristic token estimation: ~1 token per 3.8-4 characters or 0.75 words."""
+    """
+    Computes heuristic token estimation for mixed prose and source code.
+
+    Blends character-length ratio (~3.8 chars/token) and whitespace token ratio (~1.3 tokens/word)
+    to closely approximate BPE/tiktoken (cl100k_base) counts without requiring native tokenizer calls.
+
+    Args:
+        text: Input string payload.
+
+    Returns:
+        Estimated token count as an integer.
+    """
     if not text:
         return 0
     char_estimate = len(text) / 3.8
