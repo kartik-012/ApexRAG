@@ -8,7 +8,14 @@ from src.evaluation.report import generate_eval_markdown_report
 
 
 def test_evaluate_harness_runs(sample_qa_pairs):
-    """Full harness must execute and return structured results for all strategies."""
+    """
+    Verifies end-to-end evaluation harness execution across all 5 retrieval strategies.
+
+    Asserts:
+      1. Result payload contains ISO timestamp and matching question count.
+      2. Summary includes 'simple', 'semantic', 'hybrid', 'rerank', and 'router'.
+      3. Metric outputs (Recall@4, MRR, Accuracy) strictly conform to [0.0, 1.0].
+    """
     result = evaluate_harness(qa_pairs=sample_qa_pairs)
 
     assert "timestamp" in result
