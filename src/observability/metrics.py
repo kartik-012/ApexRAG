@@ -33,6 +33,16 @@ class Counter(Metric):
         self._values: Dict[Tuple[Tuple[str, str], ...], float] = {}
 
     def inc(self, amount: float = 1.0, labels: Optional[Dict[str, str]] = None):
+        """
+        Increments the counter metric monotonically.
+
+        Args:
+            amount: Non-negative value to increment (default: 1.0).
+            labels: Label key-value pairs scoping the observation.
+
+        Raises:
+            ValueError: If amount is negative, preserving Prometheus counter semantics.
+        """
         if amount < 0:
             raise ValueError("Counters can only increase")
         label_key = tuple(sorted((labels or {}).items()))
