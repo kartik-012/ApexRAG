@@ -55,7 +55,13 @@ class TraceRecord:
 
 
 class TraceBuffer:
-    """Thread-safe ring buffer storing completed distributed traces."""
+    """
+    Thread-safe FIFO ring buffer storing completed distributed traces.
+
+    Maintains a fixed-size collections.deque bounded by max_history to prevent
+    unbounded memory growth under sustained production request volumes.
+    Guarded by an internal threading.Lock for safe concurrent access across worker threads.
+    """
 
     def __init__(self, max_history: int = 100):
         self._max_history = max_history
