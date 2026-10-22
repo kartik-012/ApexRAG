@@ -1,3 +1,9 @@
+# ApexRAG Production Orchestration Stack
+# Services:
+#   1. apexrag_api: FastAPI application with SSE token streaming & OpenTelemetry tracing
+#   2. apexrag_pgvector: PostgreSQL 16 container with pgvector extension & HNSW indexing
+#   3. apexrag_prometheus: Prometheus monitoring instance scraping /metrics every 5s
+
 version: '3.8'
 
 services:
