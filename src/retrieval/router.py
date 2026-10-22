@@ -80,8 +80,18 @@ def compute_shannon_entropy(probabilities: Union[Dict[str, float], List[float], 
 
 def compute_routing_confidence(entropy: float, num_classes: int = 4) -> float:
     """
-    Normalized confidence score in [0.0, 1.0] derived from entropy:
+    Computes normalized confidence score in [0.0, 1.0] derived from Shannon entropy:
         confidence = 1.0 - (entropy / log2(num_classes))
+
+    Linearly maps minimum uncertainty (0.0 bits) to 1.0 confidence, and maximum
+    uncertainty (uniform distribution over num_classes) to 0.0 confidence.
+
+    Args:
+        entropy: Calculated Shannon entropy in bits (log2).
+        num_classes: Total number of discrete candidate routing strategies (default: 4).
+
+    Returns:
+        Calibrated routing confidence bounded within [0.0, 1.0].
     """
     max_entropy = math.log2(max(2, num_classes))
     conf = 1.0 - (entropy / max_entropy)
