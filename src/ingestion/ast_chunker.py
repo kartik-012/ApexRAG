@@ -30,8 +30,16 @@ _HEADER_PATTERN = re.compile(r"^(#{1,4})\s+(.+)$", re.MULTILINE)
 
 def extract_code_blocks_and_mask(text: str) -> Tuple[str, List[str]]:
     """
-    Replaces fenced code blocks with placeholders so markdown headers inside code blocks
-    are never mistaken for real document section headers.
+    Replaces fenced code blocks with deterministic placeholders.
+
+    Protects markdown headers, code comments, and syntax tokens within fenced
+    code fences from being falsely parsed as document-level sections.
+
+    Args:
+        text: Raw Markdown or MDX source text.
+
+    Returns:
+        Tuple of (masked_text, list_of_original_code_blocks).
     """
     code_blocks = []
 
