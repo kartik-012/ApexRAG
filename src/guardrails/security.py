@@ -58,7 +58,18 @@ _PII_PATTERNS = [
 
 
 def detect_prompt_injection(text: str) -> Tuple[bool, List[str]]:
-    """Detects prompt injection and jailbreak signatures."""
+    """
+    Scans incoming query text against deterministic adversarial prompt injection patterns.
+
+    Detects direct instruction overrides, jailbreak personas (e.g. DAN mode),
+    system prompt exfiltration requests, and delimiter injection tags (<|im_start|>, [INST]).
+
+    Args:
+        text: Raw user query string.
+
+    Returns:
+        Tuple of (has_injection: bool, list_of_violation_types: List[str]).
+    """
     violations = []
     for pattern, name in _INJECTION_PATTERNS:
         if pattern.search(text):
