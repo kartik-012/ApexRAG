@@ -10,7 +10,19 @@ from src.config import PRIMARY_MODEL, SECONDARY_MODEL
 
 def debate_faithfulness(question: str, context: str, answer: str) -> dict:
     """
-    Two-judge debate protocol to determine whether an answer is strictly grounded in retrieved context.
+    Dual-judge consensus and arbitration protocol for answer faithfulness evaluation.
+
+    Mitigates single-model self-preference and blind-spot confirmation bias by prompting
+    two heterogeneous model families (e.g. LLaMA vs. Phi-3) independently. When judges
+    disagree, invokes an adversarial arbitration round to render a final consensus verdict.
+
+    Args:
+        question: Original query or prompt.
+        context: Retrieved context passages presented to the generator.
+        answer: Candidate generation to verify for hallucination.
+
+    Returns:
+        dict: Consensus verdict ('faithful'), agreement flag, and individual judge rationale.
     """
     judge_prompt = """Context: {context}
 Answer: {answer}
