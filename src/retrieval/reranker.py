@@ -19,8 +19,17 @@ _model = None
 
 def get_reranker(model_name: str = RERANKER_MODEL_NAME):
     """
-    Lazy-loads the real cross-encoder. Call this in your actual environment
-    (not sandbox) — first call downloads ~80MB of weights, then caches.
+    Lazy-loads and caches the singleton CrossEncoder model.
+
+    Unlike bi-encoders which encode queries and documents independently into fixed-size
+    vectors, cross-encoders feed concatenated (query, text) pairs directly into full
+    cross-attention transformer layers, capturing fine-grained token-level interactions.
+
+    Args:
+        model_name: HuggingFace model identifier (default: ms-marco-MiniLM-L-6-v2).
+
+    Returns:
+        Loaded CrossEncoder instance.
     """
     global _model
     if _model is None:
