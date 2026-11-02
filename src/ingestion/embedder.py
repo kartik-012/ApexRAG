@@ -88,8 +88,17 @@ def ensure_embedder_fitted(corpus_texts: list[str]) -> None:
 
 def embed_texts(texts: list[str]) -> np.ndarray:
     """
-    Matches embed_fn(sentences) -> np.ndarray interface.
-    Normalized embeddings ensure cosine distance == 1 - dot product.
+    Generates 384-dimensional dense semantic embeddings for a batch of input texts.
+
+    Enforces strict L2-normalization (||v||_2 = 1.0) so that inner dot product directly
+    corresponds to cosine similarity, enabling efficient HNSW cosine indexing.
+    Falls back gracefully to sublinear-TF + TruncatedSVD LSA projection when offline.
+
+    Args:
+        texts: List of strings or document chunks to vectorize.
+
+    Returns:
+        np.ndarray: Array of shape (len(texts), 384) with unit-norm embedding vectors.
     """
     if not texts:
         return np.empty((0, 384))
