@@ -48,7 +48,13 @@ def _parse_frontmatter(raw_text: str) -> tuple[dict, str]:
 
 
 def _clean_mdx(body: str) -> str:
-    """Strip MDX component wrapper tags, keep inner content; strip heading anchors."""
+    """
+    Sanitizes React MDX documentation content.
+
+    Strips interactive React documentation component tags (<Pitfall>, <DeepDive>,
+    <Sandpack>, <InlineToc>) while preserving inner Markdown text, and removes React.dev
+    JSX comment anchor suffixes ({/*anchor-id*/}) to eliminate retrieval noise.
+    """
     body = MDX_COMPONENT_PATTERN.sub("", body)
     body = HEADING_ANCHOR_PATTERN.sub("", body)
     return body.strip()
