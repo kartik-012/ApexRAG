@@ -23,6 +23,14 @@ class RetrievedChunk:
 
 
 class VectorStore:
+    """
+    Tiered Dual-Backend Vector Store with Graceful In-Memory Fallback.
+
+    Hierarchy:
+      1. PostgreSQL + pgvector: High-concurrency enterprise store with HNSW indexing.
+      2. ChromaDB: Embedded persistent vector database for single-node deployments.
+      3. In-Memory NumPy: Zero-dependency vectorized cosine distance for headless testing and CI.
+    """
     def __init__(
         self,
         persist_path: str = CHROMA_PERSIST_PATH,
