@@ -88,7 +88,14 @@ class PgVectorStore:
             return False
 
     def init_schema(self, conn) -> None:
-        """Initializes pgvector extension, chunks table, and HNSW index idempotently."""
+        """
+        Initializes pgvector extension, document_chunks table, and HNSW index idempotently.
+
+        Configures:
+          - vector(384) column for dense embedding storage.
+          - HNSW index (m = 16, ef_construction = 64) for sub-10ms approximate nearest neighbors.
+          - GIN inverted index over JSONB metadata for fast tenant and era pre-filtering.
+        """
         from pgvector.psycopg2 import register_vector
         register_vector(conn)
 
