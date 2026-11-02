@@ -65,11 +65,19 @@ class UserContext:
 def can_access_chunk(chunk_metadata: Dict[str, Any], user: UserContext) -> bool:
     """
     Evaluates whether the requesting UserContext is authorized to access a document chunk.
-    Enforces:
-      1. Superadmin bypass
-      2. Tenant isolation (tenant_id match or chunk is public)
-      3. Clearance level hierarchy (user clearance >= chunk clearance)
-      4. Role-based ACL (user has at least one required role, or chunk has no role restrictions)
+
+    Enforces zero-trust pre-filtering prior to LLM context ingestion:
+      1. Superadmin bypass: Unrestricted access across all tenants and classifications.
+      2. Multi-tenant isolation: Matches tenant_id or permits universally shared 'public' documents.
+      3. Clearance level hierarchy: User clearance rank must equal or exceed chunk clearance (Public < Internal < Confidential < Restricted).
+      4. Role-based ACL: Validates membership against allowed_roles (or bypasses if unconstrained/admin).
+
+    Args:
+        chunk_metadata: Metadata dictionary associated with the candidate document chunk.
+        user: Context object containing user ID, tenant identity, assigned roles, and clearance rank.
+
+    Returns:
+        bool: True if authorization is granted under all zero-trust criteria, False otherwise.
     """
     if "superadmin" in user.roles:
         return True
