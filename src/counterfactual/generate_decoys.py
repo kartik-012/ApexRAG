@@ -23,7 +23,18 @@ def generate_decoy(chunk_text: str) -> str:
 
 def build_counterfactual_test_set(qa_pairs: List[Dict[str, Any]], chunks_by_id: Dict[str, str]) -> List[Dict[str, Any]]:
     """
-    Builds decoy counterfactual test set from ground truth QA pairs.
+    Synthesizes a counterfactual benchmark suite from verified ground-truth QA pairs.
+
+    Injects minimal semantic perturbations into gold chunks (e.g. flipping boolean guards,
+    altering hook signatures, or mutating return types) to test whether vector similarity
+    and cross-encoder rerankers discriminate real technical specifications from plausible decoys.
+
+    Args:
+        qa_pairs: List of verified QA pair dictionaries.
+        chunks_by_id: Mapping from chunk ID to original raw document text.
+
+    Returns:
+        List of counterfactual test cases containing question, real gold ID, and decoy text.
     """
     test_set = []
     for pair in qa_pairs:
