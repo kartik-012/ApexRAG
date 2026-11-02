@@ -73,8 +73,10 @@ class ConcurrencyManager:
 
     async def run_in_thread(self, func: Callable[..., T], *args: Any, **kwargs: Any) -> T:
         """
-        Executes a blocking callable in a worker thread via asyncio.to_thread,
-        preventing event loop head-of-line blocking.
+        Executes a blocking synchronous callable in an isolated worker thread pool.
+
+        Utilizes asyncio.to_thread to avoid head-of-line blocking on the main asyncio
+        event loop, preserving responsive HTTP request handling and SSE token streaming.
         """
         if kwargs:
             call = partial(func, *args, **kwargs)
