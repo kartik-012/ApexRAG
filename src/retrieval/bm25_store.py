@@ -14,7 +14,13 @@ _CAMEL_SPLIT = re.compile(r"(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])")
 
 
 def tokenize(text: str) -> List[str]:
-    """Lowercase word/identifier tokenizer preserving underscores and expanding camelCase symbols."""
+    """
+    Code-aware lexical tokenizer for technical React documentation.
+
+    Preserves alphanumeric identifiers and underscores while performing camelCase
+    boundary splitting (e.g., 'componentDidMount' -> 'component', 'did', 'mount';
+    'useLayoutEffect' -> 'layout', 'effect') to enable sub-identifier lexical matching.
+    """
     raw_tokens = _TOKEN_PATTERN.findall(text)
     tokens: List[str] = []
     for tok in raw_tokens:
