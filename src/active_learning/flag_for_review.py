@@ -9,7 +9,18 @@ from typing import List, Dict, Any
 
 def flag_disagreements(eval_results: List[Dict[str, Any]], confidence_threshold: float = 0.3) -> List[Dict[str, Any]]:
     """
-    Flags questions where system confidence conflicts with evaluation judgment.
+    Flags evaluation questions where system confidence sharply conflicts with ground-truth correctness.
+
+    Triages edge cases for human-in-the-loop review:
+      1. High Confidence False Positives: System reports HIGH confidence, but output fails ground-truth checks.
+      2. Low Confidence True Positives: System reports LOW confidence, but answer is evaluated as correct.
+
+    Args:
+        eval_results: List of evaluation result records with 'confidence' and 'correct' fields.
+        confidence_threshold: Maximum allowable disagreement margin before flagging.
+
+    Returns:
+        List of flagged question records annotated with triage reasons.
     """
     flagged = []
     for r in eval_results:
