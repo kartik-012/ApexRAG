@@ -78,8 +78,19 @@ def _tokenize(text: str, remove_stopwords: bool = True) -> set:
 
 def compute_chunk_relevance(query: str, chunk: str) -> float:
     """
-    Computes a calibrated relevance score in [0.0, 1.0] between query and chunk.
-    Balances stemmed keyword overlap, technical symbol detection, and exact phrases.
+    Computes a calibrated relevance score in [0.0, 1.0] between query and document chunk.
+
+    Balances three weighted lexical and semantic features:
+      1. Stemmed Token Overlap (65% weight): Keyword recall against filtered query tokens.
+      2. Technical Symbol Detection (up to 30% boost): React hooks, lifecycle methods, and API entities.
+      3. Exact Phrase Matching (up to 20% boost): Literal n-gram matches for focused technical queries.
+
+    Args:
+        query: User prompt or search question.
+        chunk: Document passage or candidate code section.
+
+    Returns:
+        Calibrated relevance score clamped in range [0.0, 1.0].
     """
     if not query or not chunk:
         return 0.0
