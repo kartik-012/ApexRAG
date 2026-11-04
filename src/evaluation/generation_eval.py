@@ -122,11 +122,21 @@ def compute_faithfulness(
     entailment_threshold: float = 0.45,
 ) -> Tuple[float, List[ClaimVerification]]:
     """
-    Computes Faithfulness (Factual Consistency) score in [0.0, 1.0].
-    Decomposes the answer into atomic statements and verifies each against context
-    using hybrid lexical claim coverage + semantic embedding similarity.
+    Computes Faithfulness (Factual Consistency) score in [0.0, 1.0] via atomic claim entailment.
 
-    Faithfulness = |Supported Claims| / |Total Claims|
+    Evaluation Mechanism:
+      1. Statement Extraction: Decomposes the generated answer into isolated atomic factual claims.
+      2. Dual Verification: Verifies each claim against retrieved context chunks using both
+         dense embedding cosine similarity and morphological lexical overlap.
+      3. Formulation: Faithfulness = |Supported Claims| / |Total Claims|.
+
+    Args:
+        answer: Generated LLM response text.
+        context: Context string or list of retrieved passages presented to the LLM.
+        entailment_threshold: Minimum combined similarity score required to verify support.
+
+    Returns:
+        Tuple of (faithfulness_score: float, list of ClaimVerification details).
     """
     if isinstance(context, str):
         context_chunks = [c.strip() for c in context.split("\n\n") if c.strip()]
