@@ -7,7 +7,18 @@ import numpy as np
 
 def compute_recall_at_k(retrieved_ids: list[str], gold_ids: set[str], k: int = 4) -> float:
     """
-    Recall@K = |Retrieved@K ∩ Gold| / |Gold|
+    Computes Recall@K: Proportion of relevant gold chunks retrieved within top-K ranks.
+
+    Formula:
+        Recall@K = |Retrieved@K ∩ Gold| / |Gold|
+
+    Args:
+        retrieved_ids: Ordered list of retrieved document chunk IDs.
+        gold_ids: Set of ground-truth relevant chunk IDs.
+        k: Cutoff rank for evaluation (default: 4).
+
+    Returns:
+        float: Recall score bounded in [0.0, 1.0]. Returns 1.0 if gold_ids is empty.
     """
     if not gold_ids:
         return 1.0  # Void target / non-retrieval ground truth
