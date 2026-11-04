@@ -102,7 +102,14 @@ _era_counts: dict[str, int] = {"legacy": 0, "current": 0}
 
 
 def initialize_pipeline():
-    """Lazily initializes the full RAG pipeline on first request using AST Parent-Document Chunking."""
+    """
+    Lazily initializes singleton RAG retrieval engines, indices, and corpus structures.
+
+    Orchestrates:
+      1. Corpus Ingestion: Loads legacy and current documentation with AST hierarchy extraction.
+      2. Dual Stores: Populates pgvector/Chroma vector store (child chunks) and BM25 inverted index.
+      3. Models & Routers: Instantiates CrossEncoder reranker, dense strategy router, and semantic cache.
+    """
     global _vector_store, _bm25_store, _reranker, _router, _all_texts, _all_ids, _id_to_text, _id_to_meta, _parent_id_to_text, _era_counts
     if _vector_store is not None:
         return
