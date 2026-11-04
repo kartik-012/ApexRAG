@@ -13,7 +13,19 @@ from src.ingestion.embedder import embed_texts
 
 def compute_drift(current_chunks: list[str], baseline_embeddings: np.ndarray) -> dict:
     """
-    Computes centroid shift in embedding space against reference baseline embeddings.
+    Quantifies semantic distribution drift between active corpus passages and baseline embeddings.
+
+    Computes Euclidean distance between cluster centroids in the 384-dimensional embedding manifold:
+        shift = ||mu_current - mu_baseline||_2
+
+    Flags drift when shift exceeds DRIFT_THRESHOLD, alerting CI/CD pipelines to corpus updates.
+
+    Args:
+        current_chunks: List of current document passage strings.
+        baseline_embeddings: Reference baseline embedding matrix.
+
+    Returns:
+        dict: Shift magnitude, threshold SLA, alert boolean ('flagged'), and ISO timestamp.
     """
     current_embeddings = embed_texts(current_chunks)
     if len(current_embeddings) == 0 or len(baseline_embeddings) == 0:
