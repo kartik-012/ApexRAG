@@ -21,7 +21,19 @@ Return strict JSON: {{"paraphrase": "...", "negated": "...", "multi_hop": "..."}
 
 def generate_adversarial_set(qa_pairs: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     """
-    Generates adversarial question variants for ground truth qa_pairs.
+    Synthesizes a tripartite adversarial stress-test suite from verified ground truth pairs.
+
+    Perturbation Dimensions:
+      1. Paraphrase (Semantic Invariance): Tests semantic stability under lexical shifts.
+      2. Negated / Trick (Specificity & Guardrails): Inverts question semantics; gold chunks are
+         deliberately stripped (empty gold set) to test whether retrieval falsely triggers.
+      3. Multi-Hop (Compositional Reasoning): Synthesizes composite questions requiring multi-concept integration.
+
+    Args:
+        qa_pairs: List of verified ground-truth QA dictionaries.
+
+    Returns:
+        List of expanded adversarial question dictionaries with variant_type tags.
     """
     variants = []
     for pair in qa_pairs:
