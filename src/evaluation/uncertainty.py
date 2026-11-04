@@ -12,9 +12,17 @@ from src.config import SPREAD_CONFIDENCE_THRESHOLD, AGREEMENT_CONFIDENCE_THRESHO
 
 def embedding_spread_score(top_k_embeddings: list[np.ndarray]) -> float:
     """
-    Low spread (tight cluster) = confident, focused retrieval.
-    High spread = ambiguous / query poorly matched to corpus.
-    Returns average pairwise cosine distance among top-k results.
+    Quantifies semantic ambiguity via pairwise cosine dispersion across top-K retrieved candidates.
+
+    Theoretical Basis:
+      - Low Spread (tight cluster in manifold): Indicates consensus and high confidence.
+      - High Spread (diffuse cluster): Signifies multi-modal ambiguity or off-topic distractor retrieval.
+
+    Args:
+        top_k_embeddings: List of 1D embedding vectors for retrieved passages.
+
+    Returns:
+        float: Mean pairwise cosine distance (1.0 - cosine_similarity), bounded in [0.0, 2.0].
     """
     n = len(top_k_embeddings)
     if n < 2:
