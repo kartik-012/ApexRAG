@@ -1,3 +1,10 @@
+"""
+ApexRAG System Configuration & Environment Variable Registry.
+
+Manages centralized path resolutions, model identifiers, SLA thresholds,
+vector store preferences, database credentials, and concurrency bounds.
+"""
+
 import os
 from pathlib import Path
 from dotenv import load_dotenv
