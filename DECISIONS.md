@@ -34,3 +34,11 @@
 - **Context**: No single retrieval strategy (BM25, vector, hybrid, or re-rank) dominates across all query types.
 - **Decision**: Train a scikit-learn `LogisticRegression` classifier on past evaluation failure attribution logs to dynamically route queries at runtime based on query length, named entity presence, and TF-IDF features.
 - **Trade-off**: Adds a lightweight (~2ms) inference overhead before retrieval, but optimizes Recall@K across heterogeneous technical questions.
+
+---
+
+## ADR 005: AST-Aware Parent-Document Chunking & Context Expansion
+
+- **Context**: Standard sliding-window chunkers slice code blocks arbitrarily across boundaries, breaking syntax and causing generation failures.
+- **Decision**: Implement Markdown AST token state machine parsing heading hierarchies (`#`, `##`, `###`) and shielding fenced code blocks (` ```jsx ... ``` `). Index fine-grained 100-word child chunks into vector stores for search precision, while resolving parent document IDs (600-word sections) at generation time.
+- **Rationale**: Eliminates code snippet truncation while maintaining sharp semantic vector similarity at retrieval time.
