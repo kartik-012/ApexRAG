@@ -72,7 +72,11 @@ python scripts/build_index.py \
   --chunk-size  200 \
   --overlap     30
 
-# 6. Run the full test suite to verify setup
+# 6. Run the full test suite to verify setup (82 unit/integration tests)
+python -m pytest tests/ -v
+
+# (Optional) For high-speed test sweeps on resource-constrained hardware:
+export APEXRAG_FAST_EMBED="true"
 python -m pytest tests/ -v
 ```
 
