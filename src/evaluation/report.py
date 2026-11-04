@@ -7,7 +7,18 @@ from typing import Dict, Any
 
 def generate_eval_markdown_report(eval_data: Dict[str, Any]) -> str:
     """
-    Generates GitHub Flavored Markdown evaluation report table.
+    Renders structured benchmark evaluation metrics into GitHub Flavored Markdown (GFM).
+
+    Generates:
+      1. Retrieval Strategy Performance Table: Recall@4, MRR, nDCG@4, Accuracy, Latency, and Primary Failure.
+      2. Pareto Optimal Operational SLA Configuration (latency vs. accuracy frontier).
+      3. Failure Attribution Breakdown Matrix isolating retrieval misses vs. ranking vs. hallucination.
+
+    Args:
+        eval_data: Evaluation output dictionary containing run summary, failure counts, and timestamps.
+
+    Returns:
+        str: Formatted Markdown report suitable for CI/CD artifact archiving and PR summaries.
     """
     timestamp = eval_data.get("timestamp", "N/A")
     num_qs = eval_data.get("num_questions", 0)
