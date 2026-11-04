@@ -32,9 +32,20 @@ class OllamaUnavailableError(RuntimeError):
 
 def _extractive_synthesize(question: str, context_chunks: list[str]) -> str:
     """
-    Intelligent context-grounded extractive synthesizer used when local Ollama or cloud LLM
-    is offline. Scores sentences across retrieved chunks by lexical + code-symbol overlap
-    with the question and constructs a cohesive, grounded response.
+    Intelligent context-grounded extractive synthesizer for zero-cost offline execution.
+
+    Operates deterministically when Ollama or external LLM endpoints are unavailable:
+      1. Sentence Tokenization & Deduplication: Splits candidate passages into clean statements.
+      2. Salience Scoring: Combines content-word Jaccard overlap, React code-symbol boosts
+         (e.g., hooks, lifecycles), and retrieval rank position priors.
+      3. Synthesis: Assembles the top-scoring sentences into an authoritative answer.
+
+    Args:
+        question: User query string.
+        context_chunks: List of retrieved context passages.
+
+    Returns:
+        str: Factual extractive synthesis grounded strictly in provided context.
     """
     if not context_chunks:
         return "The provided documentation context does not contain sufficient information to answer this question."
