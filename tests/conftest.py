@@ -13,7 +13,12 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 @pytest.fixture
 def sample_qa_pairs():
-    """Minimal QA pairs fixture for tests that need ground truth data."""
+    """
+    Minimal verified QA pair fixture for rapid unit and integration testing.
+
+    Provides canonical test cases spanning legacy class components (React <= 17)
+    and modern Hooks (React 18+) without requiring external ground-truth JSON reads.
+    """
     return [
         {
             "id": "qa_test_01",
