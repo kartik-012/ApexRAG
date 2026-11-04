@@ -32,3 +32,10 @@ Confirmed to resolve to real, non-empty documents as of this build:
 
 Note: legacy doc IDs come from the YAML frontmatter `id` field, not the filename —
 these can differ (e.g. file `reference-react-component.md` has `id: react-component`).
+
+## Ground-Truth Dataset Specification
+
+The ground-truth dataset (`data/ground_truth/qa_pairs.json`) consists of 100 human-annotated pairs:
+- **Coverage**: 50 questions spanning legacy class component patterns (React <= 17) and 50 spanning modern Hooks patterns (React 18+).
+- **Schema**: Each record specifies `id`, `question`, `answer`, `gold_doc_id`, `gold_chunk_ids`, `query_type`, and `difficulty_level`.
+- **Integrity**: Ground-truth IDs are validated against corpus chunk IDs at build time to prevent evaluation leakage.
