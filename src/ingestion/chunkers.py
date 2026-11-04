@@ -19,7 +19,17 @@ from src.ingestion.ast_chunker import (
 
 def simple_chunk(text: str, chunk_size: int = 500, overlap: int = 50) -> list[str]:
     """
-    Fixed-size sliding window over whitespace-split words.
+    Fixed-size sliding window chunking across whitespace-delimited word tokens.
+
+    Provides the canonical baseline chunking implementation for comparative benchmark evaluations.
+
+    Args:
+        text: Raw document text string.
+        chunk_size: Maximum word count per chunk window (default: 500).
+        overlap: Stride overlap in words between adjacent windows (default: 50).
+
+    Returns:
+        list[str]: Sequential list of word-window chunk strings.
     """
     words = text.split()
     if not words:
