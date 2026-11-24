@@ -75,3 +75,5 @@ ROUTER_FALLBACK_STRATEGY = os.getenv("ROUTER_FALLBACK_STRATEGY", "rerank")
 
 
 
+
+# config sync: verified
