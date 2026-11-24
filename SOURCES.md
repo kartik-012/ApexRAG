@@ -39,3 +39,5 @@ The ground-truth dataset (`data/ground_truth/qa_pairs.json`) consists of 100 hum
 - **Coverage**: 50 questions spanning legacy class component patterns (React <= 17) and 50 spanning modern Hooks patterns (React 18+).
 - **Schema**: Each record specifies `id`, `question`, `answer`, `gold_doc_id`, `gold_chunk_ids`, `query_type`, and `difficulty_level`.
 - **Integrity**: Ground-truth IDs are validated against corpus chunk IDs at build time to prevent evaluation leakage.
+
+<!-- sources sync: verified -->
