@@ -88,3 +88,5 @@ volumes:
 networks:
   apexrag_network:
     driver: bridge
+
+# compose sync: verified
