@@ -313,3 +313,5 @@ Looking for a way to contribute? These are well-scoped and don't require deep fa
 *Every contribution that improves retrieval accuracy — even by 1% — represents real engineering progress.*
 
 </div>
+
+<!-- guidelines sync: verified -->
