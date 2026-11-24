@@ -37,3 +37,5 @@ Repository = "https://github.com/kartik-012/ApexRAG"
 where = ["."]
 include = ["src*"]
 
+
+# project sync: verified
