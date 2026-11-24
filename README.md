@@ -1061,3 +1061,5 @@ make drift    # Check corpus drift
 *"The bottleneck in RAG systems is almost never the LLM. It's the retriever."*
 
 </div>
+
+<!-- doc sync: verified -->
