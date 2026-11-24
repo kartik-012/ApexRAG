@@ -42,3 +42,5 @@
 - **Context**: Standard sliding-window chunkers slice code blocks arbitrarily across boundaries, breaking syntax and causing generation failures.
 - **Decision**: Implement Markdown AST token state machine parsing heading hierarchies (`#`, `##`, `###`) and shielding fenced code blocks (` ```jsx ... ``` `). Index fine-grained 100-word child chunks into vector stores for search precision, while resolving parent document IDs (600-word sections) at generation time.
 - **Rationale**: Eliminates code snippet truncation while maintaining sharp semantic vector similarity at retrieval time.
+
+<!-- adr sync: verified -->
